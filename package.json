@@ -1,7 +1,7 @@
 {
-  "name": "api.event.checker",
+  "name": "api.chat",
   "version": "1.0.0",
-  "description": "API para controlar la subscripcion a eventos, asi como gestionar los mensajes y notificaciones que son necesarias para el funcionamiento de las otras APIs",
+  "description": "API para chat con socket.io",
   "main": "app.js",
   "scripts": {
     "start": "node dist/bundle.js",

@@ -1,10 +1,10 @@
 [![Deployment Pipeline](https://github.com/union-digital-cuba/api.event.checker/actions/workflows/pipeline.yml/badge.svg)](https://github.com/union-digital-cuba/api.event.checker/actions/workflows/pipeline.yml)
 
-# API Event Checker 💻
+# API Chat 💻
 
 ## Description 📚
 
-API para controlar la subscripcion a eventos, asi como gestionar los mensajes y notificaciones que son necesarias para el funcionamiento de las otras APIs
+API para chat con Socket.io
 
 ## Installation 💡
 
@@ -15,7 +15,6 @@ API para controlar la subscripcion a eventos, asi como gestionar los mensajes y 
 
 - API
 - WebSocket
-- Agendar
 
 ## Backend Development 🌚
 
