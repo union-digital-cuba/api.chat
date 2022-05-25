@@ -3,6 +3,8 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import swaggerJsDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
+import io from 'socket.io'
+import http from 'http'
 
 import { version, description, author } from '../package.json'
 import { consoleInfo } from './utils/handleConsole'
@@ -47,6 +49,20 @@ app.use(systemRoutes)
 
 app.use(express.static('dist'))
 
+const socketHttp = http.createServer(app)
+const socketServer = io(socketHttp, {
+  transports: ['polling'],
+  pingInterval: 10000,
+  pingTimeout: 5000,
+  cors: {
+    cors: {
+      origin: 'http://localhost:3000',
+    },
+  },
+})
+
 app.listen(PORT, () => {
   consoleInfo(`API v${version}, Server Started at: http://${SERVER}:${PORT} ☕`)
 })
+
+export { socketServer }

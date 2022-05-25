@@ -10,7 +10,7 @@ export const systemVersion = (req, res) => {
 
 export const getHome = (req, res) => {
   const welcomeJSON = {
-    message: 'Welcome to the API Event Checker',
+    message: 'Welcome to the API Chat',
     description: description,
     version: version,
   }
