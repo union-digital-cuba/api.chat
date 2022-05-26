@@ -3,7 +3,7 @@ import { consoleError, consoleInfo } from '../utils/handleConsole'
 
 const orm = new Sequelize('sqlite::memory:')
 
-const syncCompleteModel = async () => {
+const sync = async () => {
   try {
     await orm.sync()
     consoleInfo('All models were synchronized successfully.')
@@ -12,4 +12,18 @@ const syncCompleteModel = async () => {
   }
 }
 
-export { orm, syncCompleteModel }
+const start = async () => {
+  try {
+    await orm.authenticate()
+    await orm.sync()
+
+    consoleInfo('Connection has been established successfully.')
+
+    return true
+  } catch (error) {
+    consoleError('Unable to connect to the database: ' + error)
+    return false
+  }
+}
+
+export { orm, sync, start }

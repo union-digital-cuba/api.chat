@@ -1,4 +1,4 @@
-import { orm, syncCompleteModel } from './orm'
+import { orm, sync } from './orm'
 import { DataTypes } from 'sequelize/types'
 
 const User = orm.define('user', {
@@ -16,6 +16,6 @@ User.Messages = User.hasMany(Message)
 Message.SendedBy = Message.belongsTo(User)
 Message.SendedTo = Message.hasOne(User)
 
-syncCompleteModel()
+sync()
 
 export { User, Message }
