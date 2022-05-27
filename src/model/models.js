@@ -1,5 +1,5 @@
 import { orm, sync } from './orm'
-import { DataTypes } from 'sequelize/types'
+import { DataTypes, Sequelize } from 'sequelize/types'
 
 const User = orm.define('user', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
@@ -9,12 +9,12 @@ const User = orm.define('user', {
 const Message = orm.define('messages', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
   message: { type: DataTypes.STRING, allowNull: false },
-  date: { type: DataTypes.DATE, allowNull: false },
+  date: Sequelize.DATE,
 })
 
 User.Messages = User.hasMany(Message)
-Message.SendedBy = Message.belongsTo(User)
-Message.SendedTo = Message.hasOne(User)
+Message.SendedBy = Message.belongsTo(User, { as: 'sendedBy', foreignKey: 'sendedById' })
+Message.SendedTo = Message.hasOne(User, { as: 'sendedTo', foreignKey: 'sendedToId' })
 
 sync()
 
