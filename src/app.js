@@ -3,7 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import swaggerJsDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
-import io from 'socket.io'
+import { Server as SocketServer } from 'socket.io'
 import http from 'http'
 import { start } from './model/orm'
 
@@ -50,23 +50,36 @@ app.use(systemRoutes)
 
 app.use(express.static('dist'))
 
-const socketHttp = http.createServer(app)
-const socketServer = io(socketHttp, {
-  transports: ['polling'],
-  pingInterval: 10000,
-  pingTimeout: 5000,
+const httpServer = http.createServer(app)
+const io = new SocketServer(httpServer, {
+  // transports: ['polling'],
+  // pingInterval: 10000,
+  // pingTimeout: 5000,
   cors: {
     origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
   },
+})
+
+io.on('connection', (socket) => {
+  consoleInfo(`user connected ${socket.id}`)
+
+  socket.on('send_message', (data) => {
+    socket.emit('receive_message', data)
+  })
+
+  socket.on('disconnect', function () {
+    consoleInfo('user disconnected')
+  })
 })
 
 const startSequelize = async () => {
   await start()
 }
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, SERVER, () => {
   startSequelize()
   consoleInfo(`API v${version}, Server Started at: http://${SERVER}:${PORT} ☕`)
 })
 
-export { socketServer }
+export { io }
