@@ -1,5 +1,6 @@
 import { socketServer } from '../app'
 import { consoleInfo } from '../utils/handleConsole'
+import { insertMessage } from './message'
 
 //setup event listener
 socketServer.on('connection', (socket) => {
@@ -22,18 +23,12 @@ socketServer.on('connection', (socket) => {
     socket.broadcast.emit('notifyStopTyping')
   })
 
-  socket.on('chat message', function (msg) {
-    consoleInfo('message: ' + msg)
+  socket.on('chat message', function (sendedBy, sendedTo, message) {
+    consoleInfo('message: ' + message)
 
     //broadcast message to everyone in port:5000 except yourself.
-    socket.broadcast.emit('received', { message: msg })
+    socket.broadcast.emit('received', { message: message })
 
-    //! save chat to the database
-    // connect.then((db) => {
-    //   console.log('connected correctly to the server')
-    //   let chatMessage = new Chat({ message: msg, sender: 'Anonymous' })
-
-    //   chatMessage.save()
-    // })
+    insertMessage({ sendedBy, sendedTo, message })
   })
 })

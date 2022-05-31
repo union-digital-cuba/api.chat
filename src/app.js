@@ -12,7 +12,7 @@ import { consoleInfo } from './utils/handleConsole'
 import { systemRoutes } from './routes/routesSystem'
 
 // cargando puertos de configuracion
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 4000
 const SERVER = process.env.SERVER || 'localhost'
 
 // extendiendo de https://swagger.io/specification/#infoObject
@@ -56,9 +56,7 @@ const socketServer = io(socketHttp, {
   pingInterval: 10000,
   pingTimeout: 5000,
   cors: {
-    cors: {
-      origin: 'http://localhost:3000',
-    },
+    origin: 'http://localhost:3000',
   },
 })
 

@@ -1,7 +1,7 @@
 import { Message } from '../model/models'
 import { consoleError, consoleInfo } from '../utils/handleConsole'
 
-//! insert chat
+//! insert message
 const insertMessage = async ({ sendedBy, sendedTo, message }) => {
   try {
     const created = await Message.create({ sendedBy, sendedTo, message })
