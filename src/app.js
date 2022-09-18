@@ -9,11 +9,14 @@ import { start } from './model/orm'
 
 import { version, description, author } from '../package.json'
 import { consoleInfo } from './utils/handleConsole'
-import { systemRoutes } from './routes/routesSystem'
+
+import { SystemRoutes } from './routes/system'
 
 // cargando puertos de configuracion
 const PORT = process.env.PORT || 4000
 const SERVER = process.env.SERVER || 'localhost'
+const APPNAME = process.env.APPNAME || 'api-event-checker'
+const FRONTHOST = process.env.FRONTHOST || 'http://localhost:3000'
 
 // extendiendo de https://swagger.io/specification/#infoObject
 const swaggerOptions = {
@@ -24,7 +27,7 @@ const swaggerOptions = {
       contact: {
         name: author,
       },
-      servers: [`http://${SERVER}:${PORT}`, `https://api-event-checker.herokuapp.com`],
+      servers: [`http://${SERVER}:${PORT}`, `https://${APPNAME}.herokuapp.com`],
     },
   },
   apis: ['src/routes/*.js'],
@@ -46,7 +49,7 @@ app.use(express.json())
 app.use(cors())
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
-app.use(systemRoutes)
+app.use(SystemRoutes)
 
 app.use(express.static('dist'))
 
@@ -56,22 +59,22 @@ const io = new SocketServer(httpServer, {
   // pingInterval: 10000,
   // pingTimeout: 5000,
   cors: {
-    origin: 'http://localhost:3000',
+    origin: FRONTHOST,
     methods: ['GET', 'POST'],
   },
 })
 
-io.on('connection', (socket) => {
-  consoleInfo(`user connected ${socket.id}`)
+// io.on('connection', (socket) => {
+//   consoleInfo(`user connected ${socket.id}`)
 
-  socket.on('send_message', (data) => {
-    socket.emit('receive_message', data)
-  })
+//   socket.on('send_message', (data) => {
+//     socket.emit('receive_message', data)
+//   })
 
-  socket.on('disconnect', function () {
-    consoleInfo('user disconnected')
-  })
-})
+//   socket.on('disconnect', function () {
+//     consoleInfo('user disconnected')
+//   })
+// })
 
 const startSequelize = async () => {
   await start()

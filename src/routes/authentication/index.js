@@ -1,9 +1,7 @@
 import express from 'express'
-import { healthCheck, systemVersion, getHome } from '../logic/bllSystem'
+import { SystemBLL } from '../../logic'
 
-export const systemRoutes = express.Router()
-
-systemRoutes.get('/', getHome)
+export const authenticationRoutes = express.Router()
 
 /**
  * @swagger
@@ -14,7 +12,7 @@ systemRoutes.get('/', getHome)
  *      '200':
  *        description: Get the health of the system, 'It works!' if the system is healthy of course
  */
-systemRoutes.get('/health', healthCheck)
+authenticationRoutes.get('/login', SystemBLL.healthCheck)
 
 /**
  * @swagger
@@ -25,4 +23,4 @@ systemRoutes.get('/health', healthCheck)
  *      '200':
  *        description: Get the version of the system
  */
-systemRoutes.get('/version', systemVersion)
+authenticationRoutes.get('/register', SystemBLL.getHome)
