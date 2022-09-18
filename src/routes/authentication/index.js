@@ -12,7 +12,7 @@ export const AuthenticationRoutes = express.Router()
  *      '200':
  *        description: Get the health of the system, 'It works!' if the system is healthy of course
  */
-AuthenticationRoutes.get('/login', AuthenticationBLL.Login)
+AuthenticationRoutes.get('/user/login', AuthenticationBLL.Login)
 
 /**
  * @swagger
@@ -23,4 +23,4 @@ AuthenticationRoutes.get('/login', AuthenticationBLL.Login)
  *      '200':
  *        description: Get the version of the system
  */
-AuthenticationRoutes.get('/register', AuthenticationBLL.Register)
+AuthenticationRoutes.get('/user/register', AuthenticationBLL.Register)
