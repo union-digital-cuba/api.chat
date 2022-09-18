@@ -5,7 +5,7 @@ import swaggerJsDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 import { Server as SocketServer } from 'socket.io'
 import http from 'http'
-import { start } from './model/orm'
+import { ORMFunctions } from './model/orm'
 
 import { version, description, author } from '../package.json'
 import { Console } from './utils/handleConsole'
@@ -78,12 +78,12 @@ const io = new SocketServer(httpServer, {
 //   })
 // })
 
-const startSequelize = async () => {
-  await start()
+const StartSequelize = async () => {
+  await ORMFunctions.Start()
 }
 
 httpServer.listen(PORT, SERVER, () => {
-  startSequelize()
+  StartSequelize()
   Console.Info(`API v${version}, Server Started at: http://${SERVER}:${PORT} ☕`)
 })
 

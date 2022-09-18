@@ -1,7 +1,7 @@
-import { orm, sync } from './orm'
-import { DataTypes, Sequelize } from 'sequelize/types'
+import { ORM } from './orm'
+import { DataTypes, Sequelize } from 'sequelize'
 
-const User = orm.define('user', {
+const User = ORM.define('user', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
   username: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false, unique: true, validate: { isEmail: true } },
@@ -10,7 +10,7 @@ const User = orm.define('user', {
   updatedAt: Sequelize.DATE,
 })
 
-const Message = orm.define('messages', {
+const Message = ORM.define('messages', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
   message: { type: DataTypes.STRING, allowNull: false },
   date: Sequelize.DATE,
@@ -20,6 +20,6 @@ User.Messages = User.hasMany(Message)
 Message.SendedBy = Message.belongsTo(User, { as: 'sendedBy', foreignKey: 'sendedById' })
 Message.SendedTo = Message.hasOne(User, { as: 'sendedTo', foreignKey: 'sendedToId' })
 
-sync({ force: 'true' })
+// sync({ force: 'true' })
 
 export { User, Message }

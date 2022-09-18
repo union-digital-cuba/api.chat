@@ -2,21 +2,36 @@ import { User } from '../../model/models'
 import { Console } from '../../utils/handleConsole'
 
 export const UserService = {
-  //! insert user
-  InsertUser: async (user) => {
+  Login: async (username, password) => {
     try {
+      const user = await User.findOne({
+        where: { username: username, password: password },
+      })
+
+      Console.Info(`User ${username} has been logged`)
+
+      return user
+    } catch (error) {
+      Console.Error(`LoginUser -> ${error.message}`)
+      throw new Error(error)
+    }
+  },
+  Register: async (user) => {
+    try {
+      const { username } = user
       const created = await User.create(user)
-      Console.Info(`user has been created`)
+
+      Console.Info(`User ${username} has been registered`)
+
       await created.save()
       return created
     } catch (error) {
-      Console.Error(`insertUser -> ${error.message}`)
+      Console.Error(`RegisterUser -> ${error.message}`)
       throw new Error(error)
     }
   },
 
-  //! read users
-  GetAllUsers: async () => {
+  GetAll: async () => {
     try {
       return await User.findAll()
     } catch (error) {
@@ -25,8 +40,7 @@ export const UserService = {
     }
   },
 
-  //! read one user by id
-  GetUser: async (id) => {
+  GetOne: async (id) => {
     try {
       const row = await User.findOne({
         where: { id: id },
@@ -38,8 +52,7 @@ export const UserService = {
     }
   },
 
-  //! delete one
-  DeleteUser: async (id) => {
+  Delete: async (id) => {
     try {
       const row = await User.findOne({ where: { id: id } })
       if (!row) throw new Error(`user not found: ${id}`)
