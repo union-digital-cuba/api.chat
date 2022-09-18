@@ -16,7 +16,7 @@ export const AuthenticationBLL = {
   Register: async (req, res) => {
     const { username, password, email } = req.body
     try {
-      const created = await UserService.RegisterUser({ username, password, email })
+      const created = await UserService.Register({ username, password, email })
       return res.status(200).json({ statusCode: 200, response: created })
     } catch (error) {
       Console.Error(`Register => ${error.message}`)

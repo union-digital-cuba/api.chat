@@ -12,6 +12,7 @@ import { Console } from './utils/handleConsole'
 
 import { SystemRoutes } from './routes/system'
 import { AuthenticationRoutes } from './routes/authentication'
+import { UsersRoutes } from './routes/users'
 
 // cargando puertos de configuracion
 const PORT = process.env.PORT || 4000
@@ -52,6 +53,7 @@ app.use(cors())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 app.use(SystemRoutes)
 app.use('/api', AuthenticationRoutes)
+app.use('/api', UsersRoutes)
 
 app.use(express.static('dist'))
 

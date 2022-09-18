@@ -19,7 +19,7 @@ const ORM = new Sequelize('sqlite::memory:', {
 const ORMFunctions = {
   Sync: async () => {
     try {
-      await ORM.sync()
+      await ORM.sync({ force: true })
       Console.Info('All models were synchronized successfully.')
     } catch (error) {
       Console.Error('All models can not be synchronized: ' + error)

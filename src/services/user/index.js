@@ -8,6 +8,8 @@ export const UserService = {
         where: { username: username, password: password },
       })
 
+      if (!user) throw Error(`User ${username} and password ${password} has not been find`)
+
       Console.Info(`User ${username} has been logged`)
 
       return user
