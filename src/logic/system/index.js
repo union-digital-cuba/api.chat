@@ -1,13 +1,13 @@
 import { version, description } from '../../../package.json'
 
 export const SystemBLL = {
-  healthCheck: (req, res) => {
+  HealthCheck: (req, res) => {
     res.status(200).json('It works!')
   },
-  systemVersion: (req, res) => {
+  SystemVersion: (req, res) => {
     res.status(200).json(`${version}`)
   },
-  getHome: (req, res) => {
+  GetHome: (req, res) => {
     const welcomeJSON = {
       message: 'Welcome to the API Chat',
       description: description,

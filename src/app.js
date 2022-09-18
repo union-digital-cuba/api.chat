@@ -8,7 +8,7 @@ import http from 'http'
 import { start } from './model/orm'
 
 import { version, description, author } from '../package.json'
-import { consoleInfo } from './utils/handleConsole'
+import { Console } from './utils/handleConsole'
 
 import { SystemRoutes } from './routes/system'
 
@@ -82,7 +82,7 @@ const startSequelize = async () => {
 
 httpServer.listen(PORT, SERVER, () => {
   startSequelize()
-  consoleInfo(`API v${version}, Server Started at: http://${SERVER}:${PORT} ☕`)
+  Console.Info(`API v${version}, Server Started at: http://${SERVER}:${PORT} ☕`)
 })
 
 export { io }

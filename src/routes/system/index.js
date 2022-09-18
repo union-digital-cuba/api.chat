@@ -3,7 +3,7 @@ import { SystemBLL } from '../../logic/system'
 
 export const SystemRoutes = express.Router()
 
-SystemRoutes.get('/', SystemBLL.getHome)
+SystemRoutes.get('/', SystemBLL.GetHome)
 
 /**
  * @swagger
@@ -14,7 +14,7 @@ SystemRoutes.get('/', SystemBLL.getHome)
  *      '200':
  *        description: Get the health of the system, 'It works!' if the system is healthy of course
  */
-SystemRoutes.get('/health', SystemBLL.healthCheck)
+SystemRoutes.get('/health', SystemBLL.HealthCheck)
 
 /**
  * @swagger
@@ -25,4 +25,4 @@ SystemRoutes.get('/health', SystemBLL.healthCheck)
  *      '200':
  *        description: Get the version of the system
  */
-SystemRoutes.get('/version', SystemBLL.systemVersion)
+SystemRoutes.get('/version', SystemBLL.SystemVersion)
