@@ -1,7 +1,9 @@
 import { Sequelize } from 'sequelize'
 import { Console } from '../utils/handleConsole'
 
-const ORM = new Sequelize('sqlite::memory:', {
+const ORM = new Sequelize({
+  dialect: 'sqlite',
+  storage: './chat.db',
   logging: false,
   dialectOptions: {
     // useUTC: false, // for reading from database
