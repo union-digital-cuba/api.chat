@@ -14,21 +14,28 @@ export const UserService = {
 
       return user
     } catch (error) {
-      Console.Error(`LoginUser -> ${error.message}`)
+      Console.Error(`Login -> ${error.message}`)
       throw new Error(error)
     }
   },
   Register: async (user) => {
     try {
-      const { username } = user
+      const { username, email } = user
+
+      const someUserWithUsername = await UserService.GetOneByUsername(username)
+      if (someUserWithUsername) throw Error(`Exist user with the same username: ${username}`)
+
+      const someUserWithEmail = await UserService.GetOneByEmail(email)
+      if (someUserWithEmail) throw Error(`Exist user with the same email: ${email}`)
+
       const created = await User.create(user)
+      await created.save()
 
       Console.Info(`User ${username} has been registered`)
 
-      await created.save()
       return created
     } catch (error) {
-      Console.Error(`RegisterUser -> ${error.message}`)
+      Console.Error(`Register -> ${error.message}`)
       throw new Error(error)
     }
   },
@@ -37,34 +44,58 @@ export const UserService = {
     try {
       return await User.findAll()
     } catch (error) {
-      Console.Error(`getAllUsers -> ${error.message}`)
+      Console.Error(`GetAll -> ${error.message}`)
       throw new Error(error)
     }
   },
 
-  GetOne: async (id) => {
+  GetOneById: async (id) => {
     try {
-      const row = await User.findOne({
+      const user = await User.findOne({
         where: { id: id },
       })
-      return row | null
+      return user || null
     } catch (error) {
-      Console.Error(`getUser -> ${error.message}`)
+      Console.Error(`GetOneById -> ${error.message}`)
+      throw new Error(error)
+    }
+  },
+
+  GetOneByUsername: async (username) => {
+    try {
+      const user = await User.findOne({
+        where: { username: username },
+      })
+      return user || null
+    } catch (error) {
+      Console.Error(`GetOneByUsername -> ${error.message}`)
+      throw new Error(error)
+    }
+  },
+
+  GetOneByEmail: async (email) => {
+    try {
+      const user = await User.findOne({
+        where: { email: email },
+      })
+      return user || null
+    } catch (error) {
+      Console.Error(`GetOneByEmail -> ${error.message}`)
       throw new Error(error)
     }
   },
 
   Delete: async (id) => {
     try {
-      const row = await User.findOne({ where: { id: id } })
-      if (!row) throw new Error(`user not found: ${id}`)
+      const user = await User.findOne({ where: { id: id } })
+      if (!user) throw new Error(`User not found: ${id}`)
 
-      await row.destroy()
-      Console.Info(`client ${row.id} has been disable...`)
+      await user.destroy()
+      Console.Info(`User ${user.id} has been disable...`)
 
       return true
     } catch (error) {
-      Console.Error(`DeshabilitarCliente -> ${error.message}`)
+      Console.Error(`Delete -> ${error.message}`)
       throw new Error(error)
     }
   },
