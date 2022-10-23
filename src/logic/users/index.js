@@ -13,10 +13,11 @@ export const UsersBLL = {
   },
   SetAvatar: async (req, res) => {
     try {
-      const { id } = req.params
+      const { id } = req.query
       const { image } = req.body
 
       const user = await UserService.SetAvatar(id, image)
+
       return res.status(200).json({ statusCode: 200, response: user })
     } catch (error) {
       Console.Error(`UsersBLL - SetAvatar => ${error.message}`)

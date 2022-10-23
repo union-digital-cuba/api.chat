@@ -23,12 +23,15 @@ const ORMFunctions = {
   Sync: async () => {
     try {
       var syncValue = {}
-      syncValue = Configuration.DB_SYNC === 'alter' ? { alter: true } : { force: true }
 
       await ORM.authenticate()
-      await ORM.sync(syncValue)
 
-      Console.Info(`Syncronization Method: ${Configuration.DB_SYNC}... 🌊`)
+      if (Configuration.DB_SYNC !== 'none') {
+        syncValue = Configuration.DB_SYNC === 'alter' ? { alter: true } : { force: true }
+        await ORM.sync(syncValue)
+        Console.Info(`Syncronization Method: ${Configuration.DB_SYNC}... 🌊`)
+      }
+
       Console.Info('Connection has been established successfully...🌎')
 
       return true

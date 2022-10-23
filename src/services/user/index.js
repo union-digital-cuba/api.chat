@@ -50,6 +50,8 @@ export const UserService = {
       user.image = image
       await user.save()
 
+      Console.Info(`Avatar has change...`)
+
       return user
     } catch (error) {
       Console.Error(`SetAvatar -> ${error.message}`)

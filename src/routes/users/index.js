@@ -7,9 +7,20 @@ export const UsersRoutes = express.Router()
  * @swagger
  * /health:
  *  get:
- *    description: Check the health of the system
+ *    description: Get all users
  *    responses:
  *      '200':
- *        description: Get the health of the system, 'It works!' if the system is healthy of course
+ *        description: Get all users
  */
 UsersRoutes.get('/users', UsersBLL.GetAll)
+
+/**
+ * @swagger
+ * /health:
+ *  get:
+ *    description: Set avatar
+ *    responses:
+ *      '200':
+ *        description: Set avatar
+ */
+UsersRoutes.post('/user/avatar/', UsersBLL.SetAvatar)
