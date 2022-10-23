@@ -18,6 +18,7 @@ export const UserService = {
       throw new Error(error)
     }
   },
+
   Register: async (user) => {
     try {
       const { username, email } = user
@@ -36,6 +37,22 @@ export const UserService = {
       return created
     } catch (error) {
       Console.Error(`Register -> ${error.message}`)
+      throw new Error(error)
+    }
+  },
+
+  SetAvatar: async (id, image) => {
+    try {
+      const user = await UserService.GetOneById(id)
+      if (!user) throw Error(`Do not exist user with id: ${id}`)
+
+      user.isSetAvatar = true
+      user.image = image
+      await user.save()
+
+      return user
+    } catch (error) {
+      Console.Error(`SetAvatar -> ${error.message}`)
       throw new Error(error)
     }
   },

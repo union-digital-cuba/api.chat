@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize'
 import { Console } from '../utils/handleConsole'
+import { Configuration } from '../env/configuration'
 
 const ORM = new Sequelize({
   dialect: 'sqlite',
@@ -21,21 +22,25 @@ const ORM = new Sequelize({
 const ORMFunctions = {
   Sync: async () => {
     try {
-      await ORM.sync({ force: true })
-      Console.Info('All models were synchronized successfully.')
+      var syncValue = {}
+      syncValue = Configuration.DB_SYNC === 'alter' ? { alter: true } : { force: true }
+
+      await ORM.authenticate()
+      await ORM.sync(syncValue)
+
+      Console.Info(`Syncronization Method: ${Configuration.DB_SYNC}... 🌊`)
+      Console.Info('Connection has been established successfully...🌎')
+
+      return true
     } catch (error) {
-      Console.Error('All models can not be synchronized: ' + error)
+      Console.Error('Unable to connect to the database: ' + error)
+      return false
     }
   },
 
   Start: async () => {
     try {
-      await ORM.authenticate()
-      await ORM.sync()
-
-      Console.Info('Connection has been established successfully.')
-
-      return true
+      await ORMFunctions.Sync()
     } catch (error) {
       Console.Error('Unable to connect to the database: ' + error)
       return false

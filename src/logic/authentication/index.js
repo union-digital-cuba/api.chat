@@ -9,7 +9,7 @@ export const AuthenticationBLL = {
 
       return res.status(200).json({ statusCode: 200, response: user, message: `${user.username} has Logged In` })
     } catch (error) {
-      Console.Error(`Login => ${error.message}`)
+      Console.Error(`AuthenticationBLL - Login => ${error.message}`)
       return res.status(200).json({ statusCode: 400, message: error.message })
     }
   },
@@ -19,7 +19,7 @@ export const AuthenticationBLL = {
       const created = await UserService.Register({ username, password, email })
       return res.status(200).json({ statusCode: 200, response: created })
     } catch (error) {
-      Console.Error(`Register => ${error.message}`)
+      Console.Error(`AuthenticationBLL - Register => ${error.message}`)
       return res.status(200).json({ statusCode: 400, message: error.message })
     }
   },

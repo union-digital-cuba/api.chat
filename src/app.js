@@ -9,16 +9,17 @@ import { ORMFunctions } from './model/orm'
 
 import { version, description, author } from '../package.json'
 import { Console } from './utils/handleConsole'
-
+import { Configuration } from './env/configuration'
 import { SystemRoutes } from './routes/system'
 import { AuthenticationRoutes } from './routes/authentication'
 import { UsersRoutes } from './routes/users'
 
-// cargando puertos de configuracion
-const PORT = process.env.PORT || 4000
-const SERVER = process.env.SERVER || 'localhost'
-const APPNAME = process.env.APPNAME || 'api-event-checker'
-const FRONTHOST = process.env.FRONTHOST || 'http://localhost:3000'
+// cargando las variables de entorno
+dotenv.config()
+
+const { SERVER, PORT, APPNAME, FRONTHOST } = Configuration
+
+//cargando variables de configuracion
 
 // extendiendo de https://swagger.io/specification/#infoObject
 const swaggerOptions = {
@@ -36,11 +37,7 @@ const swaggerOptions = {
 }
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions)
-
 const app = express()
-
-// cargando las variables de entorno
-dotenv.config()
 
 // configurando express
 app.set('port', PORT)
