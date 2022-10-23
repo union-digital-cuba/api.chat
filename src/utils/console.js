@@ -1,4 +1,4 @@
-import { getCurrentDate } from './handleDates'
+import { getCurrentDate } from './dates'
 
 export const Console = {
   Log: (message) => {

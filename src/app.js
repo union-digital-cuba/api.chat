@@ -8,7 +8,7 @@ import http from 'http'
 import { ORMFunctions } from './model/orm'
 
 import { version, description, author } from '../package.json'
-import { Console } from './utils/handleConsole'
+import { Console } from './utils/console'
 import { Configuration } from './env/configuration'
 import { SystemRoutes } from './routes/system'
 import { AuthenticationRoutes } from './routes/authentication'

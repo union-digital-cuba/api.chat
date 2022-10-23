@@ -23,4 +23,15 @@ UsersRoutes.get('/users', UsersBLL.GetAll)
  *      '200':
  *        description: Set avatar
  */
-UsersRoutes.post('/user/avatar/', UsersBLL.SetAvatar)
+UsersRoutes.post('/user/avatar', UsersBLL.SetAvatar)
+
+/**
+ * @swagger
+ * /health:
+ *  get:
+ *    description: Get avatars depending of the amount
+ *    responses:
+ *      '200':
+ *        description: Get avatars depending of the amount
+ */
+UsersRoutes.get('/avatars', UsersBLL.GetAvatars)

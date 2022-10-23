@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-import { Console } from '../utils/handleConsole'
+import { Console } from '../utils/console'
 import { Configuration } from '../env/configuration'
 
 const ORM = new Sequelize({

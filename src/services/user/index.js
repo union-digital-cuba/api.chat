@@ -1,5 +1,6 @@
 import { User } from '../../model/models'
-import { Console } from '../../utils/handleConsole'
+import { GetSVG, GetTakeLocalAvatars } from '../../utils/avatars'
+import { Console } from '../../utils/console'
 
 export const UserService = {
   Login: async (username, password) => {
@@ -37,6 +38,20 @@ export const UserService = {
       return created
     } catch (error) {
       Console.Error(`Register -> ${error.message}`)
+      throw new Error(error)
+    }
+  },
+
+  GetAvatars: async (amount) => {
+    try {
+      const avatarsName = GetTakeLocalAvatars(amount)
+      const avatarsSVG = avatarsName.map((p) => GetSVG(p))
+
+      Console.Info(`Get ${amount} avatars...`)
+
+      return avatarsSVG
+    } catch (error) {
+      Console.Error(`GetAvatars -> ${error.message}`)
       throw new Error(error)
     }
   },

@@ -1,5 +1,5 @@
 import { UserService } from '../../services/user'
-import { Console } from '../../utils/handleConsole'
+import { Console } from '../../utils/console'
 
 export const AuthenticationBLL = {
   Login: async (req, res) => {
