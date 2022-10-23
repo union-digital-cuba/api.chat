@@ -8,7 +8,7 @@ export const UserService = {
         where: { username: username, password: password },
       })
 
-      if (!user) throw Error(`User ${username} and password ${password} has not been find`)
+      if (!user) throw Error(`User ${username} and password *** has not been find`)
 
       Console.Info(`User ${username} has been logged`)
 
@@ -108,7 +108,7 @@ export const UserService = {
       if (!user) throw new Error(`User not found: ${id}`)
 
       await user.destroy()
-      Console.Info(`User ${user.id} has been disable...`)
+      Console.Info(`User ${user.username} has been disable...`)
 
       return true
     } catch (error) {

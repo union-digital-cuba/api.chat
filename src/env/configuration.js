@@ -1,3 +1,8 @@
+import dotenv from 'dotenv'
+
+// cargando las variables de entorno
+dotenv.config()
+
 // cargando puertos de configuracion
 export const Configuration = {
   PORT: process.env.PORT || 4000,

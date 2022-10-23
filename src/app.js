@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import dotenv from 'dotenv'
+
 import swaggerJsDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 import { Server as SocketServer } from 'socket.io'
@@ -13,9 +13,6 @@ import { Configuration } from './env/configuration'
 import { SystemRoutes } from './routes/system'
 import { AuthenticationRoutes } from './routes/authentication'
 import { UsersRoutes } from './routes/users'
-
-// cargando las variables de entorno
-dotenv.config()
 
 const { SERVER, PORT, APPNAME, FRONTHOST } = Configuration
 
