@@ -24,7 +24,7 @@ const GetTakeLocalAvatars = (amount) => {
   const avatars = []
   while (avatars.length < amount) {
     const name = GetRandomAvatarName()
-    if (avatars.indexOf(name) === -1) avatars.push(`${name}.svg`)
+    if (avatars.indexOf(`${name}.svg`) === -1) avatars.push(`${name}.svg`)
   }
   return avatars
 }

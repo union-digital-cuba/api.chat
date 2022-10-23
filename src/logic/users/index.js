@@ -26,7 +26,6 @@ export const UsersBLL = {
       const { id } = req.query
       const { image } = req.body
 
-      console.log(image)
       const user = await UserService.SetAvatar(id, image)
 
       return res.status(200).json({ statusCode: 200, response: user })
