@@ -5,7 +5,7 @@ export const UsersRoutes = express.Router()
 
 /**
  * @swagger
- * /health:
+ * /users:
  *  get:
  *    description: Get all users
  *    responses:
@@ -16,7 +16,7 @@ UsersRoutes.get('/users', UsersBLL.GetAll)
 
 /**
  * @swagger
- * /health:
+ * /users/group:
  *  get:
  *    description: Get all users of the specific group by id
  *    responses:

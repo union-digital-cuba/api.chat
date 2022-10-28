@@ -5,22 +5,22 @@ export const AuthenticationRoutes = express.Router()
 
 /**
  * @swagger
- * /health:
- *  get:
- *    description: Check the health of the system
+ * /user/login:
+ *  post:
+ *    description: Login in System
  *    responses:
  *      '200':
- *        description: Get the health of the system, 'It works!' if the system is healthy of course
+ *        description: Login in System
  */
 AuthenticationRoutes.post('/user/login', AuthenticationBLL.Login)
 
 /**
  * @swagger
- * /version:
- *  get:
- *    description: Get the version of the system
+ * /user/register:
+ *  post:
+ *    description: Register in System
  *    responses:
  *      '200':
- *        description: Get the version of the system
+ *        description: Register in System
  */
 AuthenticationRoutes.post('/user/register', AuthenticationBLL.Register)

@@ -5,8 +5,8 @@ export const AvatarsRoutes = express.Router()
 
 /**
  * @swagger
- * /health:
- *  get:
+ * /avatar:
+ *  post:
  *    description: Set avatar
  *    responses:
  *      '200':
@@ -16,7 +16,7 @@ AvatarsRoutes.post('/avatar', AvatarsBLL.SetAvatar)
 
 /**
  * @swagger
- * /health:
+ * /avatars:
  *  get:
  *    description: Get avatars depending of the amount
  *    responses:
