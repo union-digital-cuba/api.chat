@@ -14,7 +14,9 @@ const User = ORM.define('user', {
 
 const Group = ORM.define('group', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
-  createdBy: { type: DataTypes.INTEGER, allowNull: false },
+  image: { type: DataTypes.STRING, allowNull: true },
+  type: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true }, //Define si el grupo es privado o publico
+  createdBy: { type: DataTypes.INTEGER, allowNull: false }, //Usuario que crea el grupo, el dueño
   date: Sequelize.DATE,
 })
 
@@ -33,7 +35,7 @@ const Message = ORM.define('messages', {
   message: { type: DataTypes.STRING, allowNull: false },
   from: { type: DataTypes.INTEGER, allowNull: false },
   to: { type: DataTypes.INTEGER, allowNull: false },
-  type: { type: DataTypes.INTEGER, allowNull: false },
+  type: { type: DataTypes.INTEGER, allowNull: false }, //Tipo de mensaje a 1 - Usuario, 2 - Grupo
   date: Sequelize.DATE,
 })
 

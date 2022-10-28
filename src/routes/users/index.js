@@ -18,28 +18,6 @@ UsersRoutes.get('/users', UsersBLL.GetAll)
  * @swagger
  * /health:
  *  get:
- *    description: Set avatar
- *    responses:
- *      '200':
- *        description: Set avatar
- */
-UsersRoutes.post('/user/avatar', UsersBLL.SetAvatar)
-
-/**
- * @swagger
- * /health:
- *  get:
- *    description: Get avatars depending of the amount
- *    responses:
- *      '200':
- *        description: Get avatars depending of the amount
- */
-UsersRoutes.get('/avatars', UsersBLL.GetAvatars)
-
-/**
- * @swagger
- * /health:
- *  get:
  *    description: Get all users of the specific group by id
  *    responses:
  *      '200':

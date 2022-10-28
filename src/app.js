@@ -10,9 +10,12 @@ import { ORMFunctions } from './model/orm'
 import { version, description, author } from '../package.json'
 import { Console } from './utils/console'
 import { Configuration } from './env/configuration'
+
 import { SystemRoutes } from './routes/system'
 import { AuthenticationRoutes } from './routes/authentication'
 import { UsersRoutes } from './routes/users'
+import { AvatarsRoutes } from './routes/avatars'
+import { GroupsRoutes } from './routes/groups'
 
 const { SERVER, PORT, APPNAME, FRONTHOST } = Configuration
 
@@ -48,6 +51,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 app.use(SystemRoutes)
 app.use('/api', AuthenticationRoutes)
 app.use('/api', UsersRoutes)
+app.use('/api', AvatarsRoutes)
+app.use('/api', GroupsRoutes)
 
 app.use(express.static('dist'))
 
