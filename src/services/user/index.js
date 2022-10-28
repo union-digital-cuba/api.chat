@@ -32,7 +32,12 @@ export const UserService = {
       const created = await User.create(user)
       await created.save()
 
-      Console.Info(`User ${username} has been registered`)
+      Console.Info(`User ${username} has been registered...`)
+
+      const newRelation = await User_Group.create({ userId: created.id, groupId: 0 })
+      await newRelation.save()
+
+      Console.Info(`User ${username} is in Taberna...`)
 
       return created
     } catch (error) {

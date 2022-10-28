@@ -61,13 +61,13 @@ GroupsRoutes.post('/group/create', GroupBLL.Create)
 /**
  * @swagger
  * /group/join:
- *  get:
+ *  post:
  *    description: Create relationship between User and Group
  *    responses:
  *      '200':
  *        description: Create relationship between User and Group
  */
-GroupsRoutes.post('/group/join', GroupBLL.AddUserInGroup)
+GroupsRoutes.post('/group/join', GroupBLL.AddUsersInGroup)
 
 /**
  * @swagger

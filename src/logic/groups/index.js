@@ -50,11 +50,12 @@ export const GroupBLL = {
       return res.status(200).json({ statusCode: 400, message: error.message })
     }
   },
-  AddUserInGroup: async (req, res) => {
+  AddUsersInGroup: async (req, res) => {
     try {
-      const { userId, groupId } = req.query
-      const created = await GroupService.AddUserInGroup(userId, groupId)
-      return res.status(200).json({ statusCode: 200, response: created })
+      const { groupId } = req.query
+      const { usersIds } = req.body
+      await GroupService.AddUsersInGroup(usersIds, groupId)
+      return res.status(200).json({ statusCode: 200, response: 'OK' })
     } catch (error) {
       Console.Error(`GroupBLL - AddUserInGroup => ${error.message}`)
       return res.status(200).json({ statusCode: 400, message: error.message })

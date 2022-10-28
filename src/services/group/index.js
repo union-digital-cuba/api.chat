@@ -80,20 +80,21 @@ export const GroupService = {
       throw Error(error.message)
     }
   },
-  AddUserInGroup: async (userId, groupId) => {
+  AddUsersInGroup: async (usersIds, groupId) => {
     try {
       const findGroup = await Group.findOne({ where: { id: groupId } })
-      const findUser = await User.findOne({ where: { id: userId } })
-
       if (!findGroup) throw Error('Group do not exist...')
-      if (!findUser) throw Error('User do not exist...')
 
-      const relation = { userId: userId, groupId: groupId }
-      const created = await User_Group.create(relation)
+      for (const userId of usersIds) {
+        const findUser = await User.findOne({ where: { id: userId } })
+        if (!findUser) throw Error('User do not exist...')
 
-      Console.Info(`Added user ${findUser.username} into group ${findGroup.name}`)
+        const relation = { userId: userId, groupId: groupId }
+        const created = await User_Group.create(relation)
+        await created.save()
 
-      return created
+        Console.Info(`Added user ${findUser.username} into group ${findGroup.name}`)
+      }
     } catch (error) {
       Console.Error(`GroupService -> Create -> ${error.message}`)
       throw Error(error.message)
