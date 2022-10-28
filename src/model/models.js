@@ -1,5 +1,6 @@
 import { ORM } from './orm'
 import { DataTypes, Sequelize } from 'sequelize'
+import { DATE } from 'sequelize'
 
 const User = ORM.define('user', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
