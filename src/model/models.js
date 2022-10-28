@@ -14,9 +14,10 @@ const User = ORM.define('user', {
 
 const Group = ORM.define('group', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: false },
   image: { type: DataTypes.STRING, allowNull: true },
   type: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true }, //Define si el grupo es privado o publico
-  createdBy: { type: DataTypes.INTEGER, allowNull: false }, //Usuario que crea el grupo, el dueño
+  createdBy: { type: DataTypes.INTEGER, allowNull: true }, //Usuario que crea el grupo, el dueño
   date: Sequelize.DATE,
 })
 

@@ -9,6 +9,7 @@ import { ORMFunctions } from './model/orm'
 
 import { version, description, author } from '../package.json'
 import { Console } from './utils/console'
+import { Loader } from './utils/init'
 import { Configuration } from './env/configuration'
 
 import { SystemRoutes } from './routes/system'
@@ -81,6 +82,7 @@ const io = new SocketServer(httpServer, {
 
 const StartSequelize = async () => {
   await ORMFunctions.Start()
+  await Loader()
 }
 
 httpServer.listen(PORT, SERVER, () => {

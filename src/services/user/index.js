@@ -8,7 +8,7 @@ export const UserService = {
         where: { username: username, password: password },
       })
 
-      if (!user) throw Error(`User ${username} and password *** has not been find`)
+      if (!user) throw Error(`User ${username} and password *** is not registered`)
 
       Console.Info(`User ${username} has been logged`)
 
