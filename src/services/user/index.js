@@ -1,4 +1,4 @@
-import { User } from '../../model/models'
+import { User, User_Group, Group } from '../../model/models'
 import { GetSVG, GetTakeLocalAvatars } from '../../utils/avatars'
 import { Console } from '../../utils/console'
 
@@ -79,6 +79,15 @@ export const UserService = {
       return await User.findAll()
     } catch (error) {
       Console.Error(`GetAll -> ${error.message}`)
+      throw new Error(error)
+    }
+  },
+
+  GetUsersByGroup: async (id) => {
+    try {
+      return await User.findAll({ include: { model: User_Group, include: { model: Group, where: { id: id } } } })
+    } catch (error) {
+      Console.Error(`GetUsersByGroup -> ${error.message}`)
       throw new Error(error)
     }
   },

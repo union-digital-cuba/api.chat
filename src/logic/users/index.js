@@ -11,6 +11,16 @@ export const UsersBLL = {
       return res.status(200).json({ statusCode: 400, message: error.message })
     }
   },
+  GetUsersByGroup: async (req, res) => {
+    try {
+      const { id } = req.query
+      const users = await UserService.GetUsersByGroup(id)
+      return res.status(200).json({ statusCode: 200, response: users })
+    } catch (error) {
+      Console.Error(`UsersBLL - GetUsersByGroup => ${error.message}`)
+      return res.status(200).json({ statusCode: 400, message: error.message })
+    }
+  },
   GetAvatars: async (req, res) => {
     try {
       const { amount } = req.query

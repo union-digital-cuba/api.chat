@@ -12,16 +12,35 @@ const User = ORM.define('user', {
   updatedAt: Sequelize.DATE,
 })
 
+const Group = ORM.define('group', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
+  createdBy: { type: DataTypes.INTEGER, allowNull: false },
+  date: Sequelize.DATE,
+})
+
+const User_Group = ORM.define('user_group', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false,
+  },
+  selfGranted: DataTypes.BOOLEAN,
+})
+
 const Message = ORM.define('messages', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
   message: { type: DataTypes.STRING, allowNull: false },
+  from: { type: DataTypes.INTEGER, allowNull: false },
+  to: { type: DataTypes.INTEGER, allowNull: false },
+  type: { type: DataTypes.INTEGER, allowNull: false },
   date: Sequelize.DATE,
 })
 
 User.Messages = User.hasMany(Message)
-Message.SendedBy = Message.belongsTo(User, { as: 'sendedBy', foreignKey: 'sendedById' })
-Message.SendedTo = Message.hasOne(User, { as: 'sendedTo', foreignKey: 'sendedToId' })
+Message.SendedBy = Message.belongsTo(User)
 
-// sync({ force: 'true' })
+User.belongsToMany(Group, { through: User_Group })
+Group.belongsToMany(User, { through: User_Group })
 
-export { User, Message }
+export { User, Message, Group, User_Group }
