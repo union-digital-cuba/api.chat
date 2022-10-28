@@ -47,7 +47,7 @@ export const GroupService = {
   },
   GetAllByUserId: async (id) => {
     try {
-      var groups = await Group.findAll({ include: { model: User_Group, include: { model: User, where: { id: id } } } })
+      var groups = await Group.findAll({ include: { model: User, where: { id: id } } })
       return groups
     } catch (error) {
       Console.Error(`GroupService -> GetByUserId -> ${error.message}`)
