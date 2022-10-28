@@ -25,7 +25,6 @@ const ORMFunctions = {
       var syncValue = {}
 
       await ORM.authenticate()
-
       if (Configuration.DB_SYNC !== 'none') {
         syncValue = Configuration.DB_SYNC === 'alter' ? { alter: true } : { force: true }
         await ORM.sync(syncValue)

@@ -7,7 +7,7 @@ const User = ORM.define('user', {
   email: { type: DataTypes.STRING, allowNull: false, unique: true, validate: { isEmail: true } },
   password: { type: DataTypes.STRING, allowNull: true },
   isSetAvatar: { type: DataTypes.BOOLEAN, allowNull: true, defaultValue: false },
-  image: { type: DataTypes.BLOB, allowNull: true },
+  image: { type: DataTypes.STRING, allowNull: true },
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
 })
