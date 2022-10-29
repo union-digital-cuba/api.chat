@@ -37,6 +37,10 @@ export const UserService = {
       const newRelation = await User_Group.create({ userId: created.id, groupId: 0 })
       await newRelation.save()
 
+      const group = await Group.findOne({ where: { id: 0 } })
+      group.amount = group.amount + 1
+      await group.save()
+
       Console.Info(`User ${username} is in Taberna...`)
 
       return created
