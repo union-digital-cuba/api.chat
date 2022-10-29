@@ -13,8 +13,8 @@ export const UsersBLL = {
   },
   GetUsersByGroup: async (req, res) => {
     try {
-      const { id } = req.query
-      const users = await UserService.GetUsersByGroup(id)
+      const { groupId, userId } = req.query
+      const users = await UserService.GetUsersByGroup(groupId, userId)
       return res.status(200).json({ statusCode: 200, response: users })
     } catch (error) {
       Console.Error(`UsersBLL - GetUsersByGroup => ${error.message}`)

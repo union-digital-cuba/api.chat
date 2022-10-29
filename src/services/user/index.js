@@ -1,3 +1,4 @@
+import { Op } from 'sequelize'
 import { User, User_Group, Group } from '../../model/models'
 import { Console } from '../../utils/console'
 
@@ -59,9 +60,12 @@ export const UserService = {
     }
   },
 
-  GetUsersByGroup: async (id) => {
+  GetUsersByGroup: async (groupId, userId) => {
     try {
-      return await User.findAll({ where: { isSetAvatar: true }, include: { model: Group, where: { id: id } } })
+      return await User.findAll({
+        where: { isSetAvatar: true, id: { [Op.ne]: userId } },
+        include: { model: Group, where: { id: groupId } },
+      })
     } catch (error) {
       Console.Error(`GetUsersByGroup -> ${error.message}`)
       throw new Error(error)
