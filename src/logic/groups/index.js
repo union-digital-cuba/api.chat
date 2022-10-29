@@ -54,6 +54,7 @@ export const GroupBLL = {
     try {
       const { groupId } = req.query
       const { usersIds } = req.body
+
       await GroupService.AddUsersInGroup(usersIds, groupId)
       return res.status(200).json({ statusCode: 200, response: 'OK' })
     } catch (error) {

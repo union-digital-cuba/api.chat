@@ -1,6 +1,7 @@
 import { GetRandomElementFromList } from './random'
 import fs from 'fs'
 import path from 'path'
+import { Buffer } from 'buffer'
 
 const listOfAvatarsName = [
   'daniel',
@@ -37,4 +38,9 @@ const GetSVG = (image) => {
   return data
 }
 
-export { GetRandomAvatarName, GetTakeLocalAvatars, GetSVG }
+const ConvertToBase64 = (data) => {
+  const buffer = Buffer.from(data)
+  return buffer.toString('base64')
+}
+
+export { GetRandomAvatarName, GetTakeLocalAvatars, GetSVG, ConvertToBase64 }

@@ -1,4 +1,5 @@
 import { Group, User, User_Group } from '../../model/models'
+import { ConvertToBase64 } from '../../utils/avatars'
 import { Console } from '../../utils/console'
 import { getCurrentDate } from '../../utils/dates'
 import { GroupType } from '../../utils/enums'
@@ -8,11 +9,15 @@ export const GroupService = {
     try {
       var publicGroup = await Group.findOne({ where: { id: 0 } })
 
+      const avatar = await fetch('https://api.multiavatar.com/public')
+      const image = await avatar.text()
+      const base64 = ConvertToBase64(image).toString()
+
       if (!publicGroup) {
         const publicGroup = {
           id: 0,
           name: 'Taberna',
-          image: '',
+          image: base64,
           type: GroupType.Public,
           createdBy: 0,
           date: getCurrentDate(),
@@ -47,7 +52,8 @@ export const GroupService = {
   },
   GetAllByUserId: async (id) => {
     try {
-      var groups = await Group.findAll({ include: { model: User, where: { id: id } } })
+      const groups = await Group.findAll({ include: { model: User, where: { id: id } } })
+
       return groups
     } catch (error) {
       Console.Error(`GroupService -> GetByUserId -> ${error.message}`)
@@ -85,6 +91,8 @@ export const GroupService = {
       const findGroup = await Group.findOne({ where: { id: groupId } })
       if (!findGroup) throw Error('Group do not exist...')
 
+      var amount = findGroup.amount
+
       for (const userId of usersIds) {
         const findUser = await User.findOne({ where: { id: userId } })
         if (!findUser) throw Error('User do not exist...')
@@ -94,7 +102,11 @@ export const GroupService = {
         await created.save()
 
         Console.Info(`Added user ${findUser.username} into group ${findGroup.name}`)
+        amount++
       }
+
+      findGroup.amount = amount
+      await findGroup.save()
     } catch (error) {
       Console.Error(`GroupService -> Create -> ${error.message}`)
       throw Error(error.message)

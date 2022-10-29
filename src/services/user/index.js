@@ -57,7 +57,7 @@ export const UserService = {
 
   GetUsersByGroup: async (id) => {
     try {
-      return await User.findAll({ include: { model: User_Group, include: { model: Group, where: { id: id } } } })
+      return await User.findAll({ where: { isSetAvatar: true }, include: { model: Group, where: { id: id } } })
     } catch (error) {
       Console.Error(`GetUsersByGroup -> ${error.message}`)
       throw new Error(error)
