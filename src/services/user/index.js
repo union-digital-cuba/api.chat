@@ -1,8 +1,54 @@
 import { Op } from 'sequelize'
-import { User, User_Group, Group } from '../../model/models'
+import { GetMultiAvatar } from '../../api/multiavatar'
+import { User, User_Group, Group, System } from '../../model/models'
 import { Console } from '../../utils/console'
 
 export const UserService = {
+  Seed: async () => {
+    try {
+      const users = [
+        { username: 'accarbonell', email: 'accarbonell1987@gmail.com', password: 'secret' },
+        { username: 'rebecca', email: 'rebecca@gmail.com', password: 'secret' },
+        { username: 'tito', email: 'tito@gmail.com', password: 'secret' },
+        { username: 'popi', email: 'popi@gmail.com', password: 'secret' },
+      ]
+
+      var saveAny = false
+      for (let user of users) {
+        const userExist = await User.findOne({ where: { username: user.username } })
+        if (!userExist) {
+          const image = await GetMultiAvatar(user.username)
+          const userWithImage = { ...user, isSetAvatar: true, image: image }
+
+          const created = await User.create(userWithImage)
+          await created.save()
+
+          const newRelation = await User_Group.create({ userId: created.id, groupId: 0 })
+          await newRelation.save()
+
+          const group = await Group.findOne({ where: { id: 0 } })
+          group.amount = group.amount + 1
+          await group.save()
+
+          saveAny = true
+        }
+      }
+
+      if (saveAny) {
+        var defaultSystem = await System.findOne({ where: { default: true } })
+        defaultSystem.group = true
+        await defaultSystem.save()
+
+        return true
+      }
+
+      return false
+    } catch (error) {
+      Console.Error(`Seed -> ${error.message}`)
+      throw new Error(error)
+    }
+  },
+
   Login: async (username, password) => {
     try {
       const user = await User.findOne({
@@ -62,10 +108,13 @@ export const UserService = {
 
   GetUsersByGroup: async (groupId, userId) => {
     try {
-      return await User.findAll({
+      console.log(userId)
+
+      const users = await User.findAll({
         where: { isSetAvatar: true, id: { [Op.ne]: userId } },
         include: { model: Group, where: { id: groupId } },
       })
+      return users
     } catch (error) {
       Console.Error(`GetUsersByGroup -> ${error.message}`)
       throw new Error(error)

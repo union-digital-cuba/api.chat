@@ -1,5 +1,5 @@
-import { Group, User, User_Group } from '../../model/models'
-import { ConvertToBase64 } from '../../utils/avatars'
+import { GetMultiAvatar } from '../../api/multiavatar'
+import { Group, System, User, User_Group } from '../../model/models'
 import { Console } from '../../utils/console'
 import { getCurrentDate } from '../../utils/dates'
 import { GroupType } from '../../utils/enums'
@@ -9,15 +9,13 @@ export const GroupService = {
     try {
       var publicGroup = await Group.findOne({ where: { id: 0 } })
 
-      const avatar = await fetch('https://api.multiavatar.com/public')
-      const image = await avatar.text()
-      const base64 = ConvertToBase64(image).toString()
+      const image = await GetMultiAvatar('public')
 
       if (!publicGroup) {
         const publicGroup = {
           id: 0,
           name: 'Taberna',
-          image: base64,
+          image: image,
           type: GroupType.Public,
           createdBy: 0,
           date: getCurrentDate(),
@@ -25,8 +23,14 @@ export const GroupService = {
         const created = await Group.create(publicGroup)
         await created.save()
 
-        return created
+        var defaultSystem = await System.findOne({ where: { default: true } })
+        defaultSystem.group = true
+        await defaultSystem.save()
+
+        return true
       }
+
+      return false
     } catch (error) {
       Console.Error(`GroupService -> Seed -> ${error.message}`)
       throw Error(error.message)

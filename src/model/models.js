@@ -1,6 +1,14 @@
 import { ORM } from './orm'
 import { DataTypes, Sequelize } from 'sequelize'
-import { DATE } from 'sequelize'
+
+const System = ORM.define('system', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
+  groupInit: { type: DataTypes.BOOLEAN, defaultValue: false },
+  userInit: { type: DataTypes.BOOLEAN, defaultValue: false },
+  default: { type: DataTypes.BOOLEAN, defaultValue: true },
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE,
+})
 
 const User = ORM.define('user', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
@@ -48,4 +56,4 @@ Message.SendedBy = Message.belongsTo(User)
 User.belongsToMany(Group, { through: User_Group })
 Group.belongsToMany(User, { through: User_Group })
 
-export { User, Message, Group, User_Group }
+export { User, Message, Group, User_Group, System }
