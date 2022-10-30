@@ -1,6 +1,6 @@
 const MessageType = {
-  User: 1,
-  Group: 2,
+  User: 'user',
+  Group: 'group',
 }
 
 const GroupType = {

@@ -17,6 +17,7 @@ import { AuthenticationRoutes } from './routes/authentication'
 import { UsersRoutes } from './routes/users'
 import { AvatarsRoutes } from './routes/avatars'
 import { GroupsRoutes } from './routes/groups'
+import { MessagesRoutes } from './routes/messages'
 
 const { SERVER, PORT, APPNAME, FRONTHOST } = Configuration
 
@@ -55,6 +56,7 @@ app.use('/api', AuthenticationRoutes)
 app.use('/api', UsersRoutes)
 app.use('/api', AvatarsRoutes)
 app.use('/api', GroupsRoutes)
+app.use('/api', MessagesRoutes)
 
 app.use(express.static('dist'))
 

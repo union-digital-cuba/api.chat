@@ -29,6 +29,8 @@ const Group = ORM.define('group', {
   type: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true }, //Define si el grupo es privado o publico
   createdBy: { type: DataTypes.INTEGER, allowNull: true }, //Usuario que crea el grupo, el dueño
   date: Sequelize.DATE,
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE,
 })
 
 const User_Group = ORM.define('user_group', {
@@ -39,19 +41,26 @@ const User_Group = ORM.define('user_group', {
     allowNull: false,
   },
   selfGranted: DataTypes.BOOLEAN,
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE,
 })
 
-const Message = ORM.define('messages', {
+const Message = ORM.define('message', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
   message: { type: DataTypes.STRING, allowNull: false },
-  from: { type: DataTypes.INTEGER, allowNull: false },
-  to: { type: DataTypes.INTEGER, allowNull: false },
-  type: { type: DataTypes.INTEGER, allowNull: false }, //Tipo de mensaje a 1 - Usuario, 2 - Grupo
+  sender: { type: DataTypes.INTEGER, allowNull: false },
+  receiver: { type: DataTypes.INTEGER, allowNull: false },
+  type: { type: DataTypes.STRING, allowNull: false },
   date: Sequelize.DATE,
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE,
 })
 
-User.Messages = User.hasMany(Message)
-Message.SendedBy = Message.belongsTo(User)
+// User.Messages = User.hasMany(Message, { targetKey: 'id', foreignKey: 'sender' })
+// Message.User = Message.hasOne(User)
+
+// Group.Messages = Group.hasMany(Message)
+// Message.Group = Message.hasOne(Group)
 
 User.belongsToMany(Group, { through: User_Group })
 Group.belongsToMany(User, { through: User_Group })

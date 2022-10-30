@@ -1,50 +1,49 @@
 import { Message } from '../../model/models'
-import { Console } from '../../utils/handleConsole'
+import { Console } from '../../utils/console'
 
-export const MessageServices = {
-  //! insert message
-  InsertMessage: async ({ sendedBy, sendedTo, message }) => {
+export const MessageService = {
+  Insert: async ({ message, type, sender, receiver, date }) => {
     try {
-      const created = await Message.create({ sendedBy, sendedTo, message })
-      Console.Info(`message has been created`)
+      const created = await Message.create({ message, type, sender, receiver, date })
+      Console.Info(`The message has been created`)
 
       await created.save()
       return created
     } catch (error) {
-      Console.Error(`insertMessage -> ${error.message}`)
+      Console.Error(`MessageServices - Insert -> ${error.message}`)
       throw new Error(error)
     }
   },
 
-  //! read messages
-  GetAllMessages: async () => {
+  GetAllFromTo: async ({ sender, receiver, type }) => {
     try {
-      return await Message.findAll()
+      return await Message.findAll({
+        where: { sender: sender, receiver: receiver, type: type },
+        order: [['date', 'DESC']],
+      })
     } catch (error) {
-      Console.Error(`getAllMessages -> ${error.message}`)
+      Console.Error(`MessageServices - GetAllFromTo-> ${error.message}`)
       throw new Error(error)
     }
   },
 
-  //! read messages by sendedBy
-  GetMessageBySendedBy: async (sendedBy) => {
-    try {
-      const rows = await Message.findAll({ where: { sendedBy: sendedBy } })
-      return rows
-    } catch (error) {
-      Console.Error(`getMessageBySendedBy -> ${error.message}`)
-      throw new Error(error)
-    }
-  },
+  // GetMessageBySendedBy: async (sendedBy) => {
+  //   try {
+  //     const rows = await Message.findAll({ where: { sendedBy: sendedBy } })
+  //     return rows
+  //   } catch (error) {
+  //     Console.Error(`getMessageBySendedBy -> ${error.message}`)
+  //     throw new Error(error)
+  //   }
+  // },
 
-  //! read messages by sendedBy
-  GetMessageBySendedTo: async (sendedTo) => {
-    try {
-      const rows = await Message.findAll({ where: { sendedTo: sendedTo } })
-      return rows
-    } catch (error) {
-      Console.Error(`getMessageBySendedTo -> ${error.message}`)
-      throw new Error(error)
-    }
-  },
+  // GetMessageBySendedTo: async (sendedTo) => {
+  //   try {
+  //     const rows = await Message.findAll({ where: { sendedTo: sendedTo } })
+  //     return rows
+  //   } catch (error) {
+  //     Console.Error(`getMessageBySendedTo -> ${error.message}`)
+  //     throw new Error(error)
+  //   }
+  // },
 }
