@@ -36,7 +36,7 @@ export const UserService = {
 
       if (saveAny) {
         var defaultSystem = await System.findOne({ where: { default: true } })
-        defaultSystem.group = true
+        defaultSystem.userInit = true
         await defaultSystem.save()
 
         return true
@@ -108,8 +108,6 @@ export const UserService = {
 
   GetUsersByGroup: async (groupId, userId) => {
     try {
-      console.log(userId)
-
       const users = await User.findAll({
         where: { isSetAvatar: true, id: { [Op.ne]: userId } },
         include: { model: Group, where: { id: groupId } },

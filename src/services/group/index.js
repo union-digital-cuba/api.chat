@@ -24,7 +24,7 @@ export const GroupService = {
         await created.save()
 
         var defaultSystem = await System.findOne({ where: { default: true } })
-        defaultSystem.group = true
+        defaultSystem.groupInit = true
         await defaultSystem.save()
 
         return true
