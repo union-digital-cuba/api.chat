@@ -17,6 +17,8 @@ const User = ORM.define('user', {
   password: { type: DataTypes.STRING, allowNull: true },
   isSetAvatar: { type: DataTypes.BOOLEAN, allowNull: true, defaultValue: false },
   image: { type: DataTypes.STRING, allowNull: true },
+  defaultGroup: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
+  activity: { type: DataTypes.DATE, allowNull: true },
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
 })
@@ -40,7 +42,6 @@ const User_Group = ORM.define('user_group', {
     autoIncrement: true,
     allowNull: false,
   },
-  selfGranted: DataTypes.BOOLEAN,
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
 })

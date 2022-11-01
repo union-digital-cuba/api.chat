@@ -7,7 +7,7 @@ const ORM = new Sequelize({
   storage: './chat.db',
   logging: false,
   dialectOptions: {
-    // useUTC: false, // for reading from database
+    useUTC: false, // for reading from database
     dateStrings: true,
     typeCast: function (field, next) {
       // for reading from database

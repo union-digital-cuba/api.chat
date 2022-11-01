@@ -32,12 +32,51 @@ export const MessagesBLL = {
       return res.status(200).json({ statusCode: 400, message: error.message })
     }
   },
+  GetOneFromTo: async (req, res) => {
+    try {
+      const { sender, receiver, type } = req.query
+      const message = await MessageService.GetOne({ sender, receiver, type })
+
+      const userSender = await UserService.GetOneById(sender)
+      const anyReceiver =
+        type === MessageType.User ? await UserService.GetOneById(receiver) : await GroupService.GetById(receiver)
+
+      const messagesToReturn = {
+        ...message,
+        sender: { id: userSender.id, username: userSender.username, image: userSender.image },
+        receiver: {
+          id: anyReceiver.id,
+          name: type === MessageType.User ? anyReceiver.username : anyReceiver.name,
+          image: anyReceiver.image,
+        },
+      }
+
+      return res.status(200).json({ statusCode: 200, response: messagesToReturn })
+    } catch (error) {
+      Console.Error(`MessagesBLL - GetOneFromTo => ${error.message}`)
+      return res.status(200).json({ statusCode: 400, message: error.message })
+    }
+  },
   Insert: async (req, res) => {
     try {
       const { message, sender, receiver, type, date } = req.body
       const created = await MessageService.Insert({ message, sender, receiver, type, date })
 
-      return res.status(200).json({ statusCode: 200, response: created })
+      const userSender = await UserService.GetOneById(sender)
+      const anyReceiver =
+        type === MessageType.User ? await UserService.GetOneById(receiver) : await GroupService.GetById(receiver)
+
+      const messagesToReturn = {
+        ...created,
+        sender: { id: userSender.id, username: userSender.username, image: userSender.image },
+        receiver: {
+          id: anyReceiver.id,
+          name: type === MessageType.User ? anyReceiver.username : anyReceiver.name,
+          image: anyReceiver.image,
+        },
+      }
+
+      return res.status(200).json({ statusCode: 200, response: messagesToReturn })
     } catch (error) {
       Console.Error(`AvatarsBLL - SetAvatar => ${error.message}`)
       return res.status(200).json({ statusCode: 400, message: error.message })

@@ -14,7 +14,6 @@ export const MessageService = {
       throw new Error(error)
     }
   },
-
   GetAllFromTo: async ({ sender, receiver, type }) => {
     try {
       return await Message.findAll({
@@ -26,7 +25,16 @@ export const MessageService = {
       throw new Error(error)
     }
   },
-
+  GetOneFromTo: async ({ sender, receiver, type }) => {
+    try {
+      return await Message.findOne({
+        where: { sender: sender, receiver: receiver, type: type },
+      })
+    } catch (error) {
+      Console.Error(`MessageServices - GetOneFromTo-> ${error.message}`)
+      throw new Error(error)
+    }
+  },
   // GetMessageBySendedBy: async (sendedBy) => {
   //   try {
   //     const rows = await Message.findAll({ where: { sendedBy: sendedBy } })
