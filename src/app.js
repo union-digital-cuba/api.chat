@@ -3,7 +3,7 @@ import cors from 'cors'
 
 import swaggerJsDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
-import { Server as SocketServer } from 'socket.io'
+import socket from 'socket.io'
 import http from 'http'
 import { ORMFunctions } from './model/orm'
 
@@ -61,27 +61,6 @@ app.use('/api', MessagesRoutes)
 app.use(express.static('dist'))
 
 const httpServer = http.createServer(app)
-const io = new SocketServer(httpServer, {
-  // transports: ['polling'],
-  // pingInterval: 10000,
-  // pingTimeout: 5000,
-  cors: {
-    origin: FRONTHOST,
-    methods: ['GET', 'POST'],
-  },
-})
-
-// io.on('connection', (socket) => {
-//   consoleInfo(`user connected ${socket.id}`)
-
-//   socket.on('send_message', (data) => {
-//     socket.emit('receive_message', data)
-//   })
-
-//   socket.on('disconnect', function () {
-//     consoleInfo('user disconnected')
-//   })
-// })
 
 const StartSequelize = async () => {
   await ORMFunctions.Start()
@@ -93,4 +72,44 @@ httpServer.listen(PORT, SERVER, () => {
   Console.Info(`API v${version}, Server Started at: http://${SERVER}:${PORT} ☕`)
 })
 
-export { io }
+//! SOCKET IO
+const io = socket(httpServer, {
+  // transports: ['polling'],
+  // pingInterval: 10000,
+  // pingTimeout: 5000,
+  cors: {
+    origin: FRONTHOST,
+    credentials: true,
+    // methods: ['GET', 'POST'],
+  },
+  autoConnect: false,
+})
+
+global.onlineUsers = new Map()
+
+io.on('connection', (socket) => {
+  Console.Log('Socket: Connection has been made...')
+  global.chatSocket = socket
+
+  //? Disconnect from system...
+  //? 1. delete user from all groups
+  socket.on('disconnect', (user) => {
+    Console.Log(`Socket: Disconnection ${user.username}...`)
+    global.onlineUsers.delete(user.id)
+  })
+
+  //? Add user to alls groups
+  socket.on('add-user', (user) => {
+    Console.Log(`Socket: Add user ${user.username}...`)
+    global.onlineUsers.set(user.id, socket.id)
+  })
+
+  //? Send message to group or person
+  socket.on('send-message', (data) => {
+    const sendUserSocket = global.onlineUsers.get(data.receiver)
+    if (sendUserSocket) {
+      Console.Log(`Socket: Send message to ${data.receiver.username}...`)
+      socket.to(sendUserSocket).emit('message-recieve', data.message)
+    }
+  })
+})

@@ -1,7 +1,7 @@
 import { GetMultiAvatar } from '../../api/multiavatar'
 import { Group, System, User, User_Group } from '../../model/models'
 import { Console } from '../../utils/console'
-import { getCurrentDate } from '../../utils/dates'
+import { HelperDate } from '../../utils/dates'
 import { GroupType } from '../../utils/enums'
 
 export const GroupService = {
@@ -18,7 +18,7 @@ export const GroupService = {
           image: image,
           type: GroupType.Public,
           createdBy: 0,
-          date: getCurrentDate(),
+          date: HelperDate.getNowUTCtoSQL(),
         }
         const created = await Group.create(publicGroup)
         await created.save()
@@ -78,7 +78,7 @@ export const GroupService = {
       const findGroup = await Group.findOne({ where: { name: group.name } })
 
       if (!findGroup) {
-        const newGroup = { ...group, date: getCurrentDate() }
+        const newGroup = { ...group, date: HelperDate.getNowUTCtoSQL() }
 
         const created = await Group.create(newGroup)
         await created.save()

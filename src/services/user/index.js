@@ -2,6 +2,7 @@ import { Op } from 'sequelize'
 import { GetMultiAvatar } from '../../api/multiavatar'
 import { User, User_Group, Group, System } from '../../model/models'
 import { Console } from '../../utils/console'
+import { HelperDate } from '../../utils/dates'
 
 export const UserService = {
   Seed: async () => {
@@ -151,6 +152,22 @@ export const UserService = {
       return user || null
     } catch (error) {
       Console.Error(`GetOneByEmail -> ${error.message}`)
+      throw new Error(error)
+    }
+  },
+
+  GetOnlineUsers: async (id) => {
+    try {
+      const fiveMinutesPass = HelperDate.restMinutesToDateTime(HelperDate.getNow(), 5)
+
+      const online = await User.findAll({
+        where: { activity: { [Op.gte]: fiveMinutesPass } },
+        include: { model: Group, where: { id: id } },
+      })
+
+      return online
+    } catch (error) {
+      Console.Error(`GetOnlineUsers -> ${error.message}`)
       throw new Error(error)
     }
   },

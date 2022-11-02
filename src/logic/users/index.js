@@ -44,6 +44,17 @@ export const UsersBLL = {
       return res.status(200).json({ statusCode: 400, message: error.message })
     }
   },
+  GetOnlineUsers: async (req, res) => {
+    try {
+      const { id } = req.query
+      const online = await UserService.GetOnlineUsers(id)
+      return res.status(200).json({ statusCode: 200, response: online })
+    } catch (error) {
+      Console.Error(`UsersBLL - Delete => ${error.message}`)
+      return res.status(200).json({ statusCode: 400, message: error.message })
+    }
+  },
+
   Delete: async (req, res) => {
     try {
       const { id } = req.params
