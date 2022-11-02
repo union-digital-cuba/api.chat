@@ -15,11 +15,16 @@ const HelperDate = {
     const days = diference.toObject().days || -1
     return days
   },
-  getNow: () => {
-    const now = DateTime.utc()
-    return now
+  differenceByMinutes: (startTime, endTime) => {
+    const diference = startTime.diff(endTime, 'minutes')
+    return diference.toObject().endTime || -1
   },
-  getNowUTCtoSQL: () => DateTime.utc().toSQL({ includeOffset: false }),
+  getNow: () => {
+    return DateTime.utc()
+  },
+  getNowUTCtoSQL: () => {
+    return DateTime.utc().toSQL({ includeOffset: false })
+  },
   getSevenDayPassDateFromDate: (date) => {
     const sevenDayPassFromDate = DateTime.fromISO(date).minus({ days: 7 })
     return sevenDayPassFromDate
@@ -45,8 +50,7 @@ const HelperDate = {
     return nDate
   },
   getDateAsString: (date) => {
-    const nDate = date.toSQL({ includeOffset: false })
-    return nDate
+    return date.toSQL({ includeOffset: false })
   },
   getTimeFromString: (time) => {
     const timeObject = DateTime.fromISO(time)
@@ -73,8 +77,7 @@ const HelperDate = {
     return dateObject
   },
   restMinutesToDateTime: (date, amount) => {
-    const dateObject = date.minus({ minutes: amount })
-    return dateObject
+    return date.minus({ minutes: amount })
   },
   isSaturday: (date) => {
     return date.weekday === 6

@@ -2,7 +2,7 @@ import { Op } from 'sequelize'
 import { GetMultiAvatar } from '../../api/multiavatar'
 import { User, User_Group, Group, System } from '../../model/models'
 import { Console } from '../../utils/console'
-import { HelperDate } from '../../utils/dates'
+import { HelperDate, DateTime } from '../../utils/dates'
 
 export const UserService = {
   Seed: async () => {
@@ -49,7 +49,6 @@ export const UserService = {
       throw new Error(error)
     }
   },
-
   Login: async (username, password) => {
     try {
       const user = await User.findOne({
@@ -57,6 +56,9 @@ export const UserService = {
       })
 
       if (!user) throw Error(`User ${username} and password *** is not registered`)
+
+      user.activity = HelperDate.getNow().toSQL()
+      await user.save()
 
       Console.Info(`User ${username} has been logged`)
 
@@ -66,7 +68,6 @@ export const UserService = {
       throw new Error(error)
     }
   },
-
   Register: async (user) => {
     try {
       const { username, email } = user
@@ -97,7 +98,6 @@ export const UserService = {
       throw new Error(error)
     }
   },
-
   GetAll: async () => {
     try {
       return await User.findAll()
@@ -106,7 +106,6 @@ export const UserService = {
       throw new Error(error)
     }
   },
-
   GetUsersByGroup: async (groupId, userId) => {
     try {
       const users = await User.findAll({
@@ -119,7 +118,6 @@ export const UserService = {
       throw new Error(error)
     }
   },
-
   GetOneById: async (id) => {
     try {
       const user = await User.findOne({
@@ -131,7 +129,6 @@ export const UserService = {
       throw new Error(error)
     }
   },
-
   GetOneByUsername: async (username) => {
     try {
       const user = await User.findOne({
@@ -143,7 +140,6 @@ export const UserService = {
       throw new Error(error)
     }
   },
-
   GetOneByEmail: async (email) => {
     try {
       const user = await User.findOne({
@@ -155,23 +151,25 @@ export const UserService = {
       throw new Error(error)
     }
   },
-
   GetOnlineUsers: async (id) => {
     try {
-      const fiveMinutesPass = HelperDate.restMinutesToDateTime(HelperDate.getNow(), 5)
-
-      const online = await User.findAll({
-        where: { activity: { [Op.gte]: fiveMinutesPass } },
+      const usersFromGroup = await User.findAll({
         include: { model: Group, where: { id: id } },
       })
 
-      return online
+      const online = usersFromGroup.find((u) => {
+        if (u.activity) {
+          const activityDate = DateTime.fromMillis(Date.parse(u.activity)).toUTC()
+          const minutes = DateTime.fromMillis(HelperDate.getNow().toMillis() - activityDate.toMillis()).minute
+          return minutes <= 5
+        }
+      })
+      return online || []
     } catch (error) {
       Console.Error(`GetOnlineUsers -> ${error.message}`)
       throw new Error(error)
     }
   },
-
   Delete: async (id) => {
     try {
       const user = await User.findOne({ where: { id: id } })
