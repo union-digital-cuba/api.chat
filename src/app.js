@@ -88,7 +88,7 @@ const io = socket(httpServer, {
 global.onlineUsers = new Map()
 
 io.on('connection', (socket) => {
-  Console.Log('Socket: Connection has been made...')
+  Console.Log('Socket: Connection has been made...🔌')
   global.chatSocket = socket
 
   //? Disconnect from system...
@@ -106,10 +106,10 @@ io.on('connection', (socket) => {
 
   //? Send message to group or person
   socket.on('send-message', (data) => {
-    const sendUserSocket = global.onlineUsers.get(data.receiver)
+    const sendUserSocket = global.onlineUsers.get(data.receiver.id)
     if (sendUserSocket) {
-      Console.Log(`Socket: Send message to ${data.receiver.username}...`)
-      socket.to(sendUserSocket).emit('message-recieve', data.message)
+      Console.Log(`Socket: Send message to...`)
+      socket.to(sendUserSocket).emit('message-recieve', data)
     }
   })
 })

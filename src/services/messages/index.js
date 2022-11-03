@@ -32,7 +32,7 @@ export const MessageService = {
     try {
       const messages = await Message.findAll({
         where: { conversation: conversation, type: MessageType.User },
-        order: [['date', 'DESC']],
+        order: [['date', 'ASC']],
         limit: max,
       })
 
@@ -45,8 +45,8 @@ export const MessageService = {
   GetGroupLastConversation: async ({ groupId, max }) => {
     try {
       return await Message.findAll({
-        where: { receive: groupId, type: MessageType.Group },
-        order: [['date', 'DESC']],
+        where: { receiver: groupId, type: MessageType.Group },
+        order: [['date', 'ASC']],
         limit: max,
       })
     } catch (error) {
@@ -58,7 +58,7 @@ export const MessageService = {
     try {
       const message = await Message.findOne({
         where: { sender: sender, receiver: receiver, type: MessageType.User },
-        order: [['date', 'DESC']],
+        order: [['date', 'ASC']],
       })
       return message.conversation
     } catch (error) {
@@ -70,7 +70,7 @@ export const MessageService = {
     try {
       return await Message.findAll({
         where: { sender: sender, receiver: receiver, type: type },
-        order: [['date', 'DESC']],
+        order: [['date', 'ASC']],
       })
     } catch (error) {
       Console.Error(`MessageServices - GetAllFromTo-> ${error.message}`)

@@ -98,6 +98,23 @@ export const UserService = {
       throw new Error(error)
     }
   },
+  UpdateUserActivity: async (userId) => {
+    try {
+      const user = await User.findOne({
+        where: { id: userId },
+      })
+
+      if (!user) throw Error(`User do not exist...`)
+
+      user.activity = HelperDate.getNow().toSQL()
+      await user.save()
+
+      return user
+    } catch (error) {
+      Console.Error(`UpdateUserActivity -> ${error.message}`)
+      throw new Error(error)
+    }
+  },
   GetAll: async () => {
     try {
       return await User.findAll()

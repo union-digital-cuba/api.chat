@@ -15,6 +15,10 @@ export const UsersBLL = {
     try {
       const { groupId, userId } = req.query
       const users = await UserService.GetUsersByGroup(groupId, userId)
+
+      //actualizar la actividad del usuario
+      await UserService.UpdateUserActivity(userId)
+
       return res.status(200).json({ statusCode: 200, response: users })
     } catch (error) {
       Console.Error(`UsersBLL - GetUsersByGroup => ${error.message}`)
