@@ -33,8 +33,8 @@ export const UsersBLL = {
   },
   GetOnlineUsers: async (req, res) => {
     try {
-      const { id } = req.query
-      const online = await UserService.GetOnlineUsers(id)
+      const { groupId } = req.query
+      const online = await UserService.GetOnlineUsers(groupId)
       return res.status(200).json({ statusCode: 200, response: online })
     } catch (error) {
       Console.Error(`UsersBLL - GetOnlineUsers => ${error.message}`)

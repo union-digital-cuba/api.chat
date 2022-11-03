@@ -157,7 +157,7 @@ export const UserService = {
         include: { model: Group, where: { id: id } },
       })
 
-      const online = usersFromGroup.find((u) => {
+      const online = usersFromGroup.filter((u) => {
         if (u.activity) {
           const activityDate = DateTime.fromMillis(Date.parse(u.activity)).toUTC()
           const minutes = DateTime.fromMillis(HelperDate.getNow().toMillis() - activityDate.toMillis()).minute

@@ -48,6 +48,7 @@ const User_Group = ORM.define('user_group', {
 
 const Message = ORM.define('message', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
+  conversation: { type: DataTypes.UUIDV4, allowNull: false },
   message: { type: DataTypes.STRING, allowNull: false },
   sender: { type: DataTypes.INTEGER, allowNull: false },
   receiver: { type: DataTypes.INTEGER, allowNull: false },

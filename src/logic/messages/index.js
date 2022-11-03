@@ -32,6 +32,60 @@ export const MessagesBLL = {
       return res.status(200).json({ statusCode: 400, message: error.message })
     }
   },
+  GetGroupLastConversation: async (req, res) => {
+    try {
+      const { userId, groupId } = req.query
+      const messages = await MessageService.GetGroupLastConversation({ groupId, max: 100 })
+
+      const userSender = await UserService.GetOneById(userId)
+      const anyReceiver = await GroupService.GetById(groupId)
+
+      const messagesToReturn = messages.map((m) => {
+        return {
+          ...m,
+          sender: { id: userSender.id, username: userSender.username, image: userSender.image },
+          receiver: {
+            id: anyReceiver.id,
+            name: anyReceiver.name,
+            image: anyReceiver.image,
+          },
+        }
+      })
+
+      return res.status(200).json({ statusCode: 200, response: messagesToReturn })
+    } catch (error) {
+      Console.Error(`MessagesBLL - GetGroupLastConversation => ${error.message}`)
+      return res.status(200).json({ statusCode: 400, message: error.message })
+    }
+  },
+  GetUserLastConversation: async (req, res) => {
+    try {
+      const { sender, receiver } = req.query
+
+      const conversation = await MessageService.GetConversation(sender, receiver)
+      const messages = await MessageService.GetUserLastConversation({ conversation, max: 100 })
+
+      const userSender = await UserService.GetOneById(sender)
+      const anyReceiver = await UserService.GetOneById(receiver)
+
+      const messagesToReturn = messages.map((m) => {
+        return {
+          ...m,
+          sender: { id: userSender.id, username: userSender.username, image: userSender.image },
+          receiver: {
+            id: anyReceiver.id,
+            name: anyReceiver.username,
+            image: anyReceiver.image,
+          },
+        }
+      })
+
+      return res.status(200).json({ statusCode: 200, response: messagesToReturn })
+    } catch (error) {
+      Console.Error(`MessagesBLL - GetUserLastConversation => ${error.message}`)
+      return res.status(200).json({ statusCode: 400, message: error.message })
+    }
+  },
   GetOneFromTo: async (req, res) => {
     try {
       const { sender, receiver, type } = req.query
