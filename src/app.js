@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
   //? Disconnect from system...
   //? 1. delete user from all groups
   socket.on('disconnect', (user) => {
-    Console.Log(`Socket: Disconnection ${user.username}...`)
+    Console.Log(`Socket: Disconnection ${user.id}...`)
     global.onlineUsers.delete(user.id)
   })
 
@@ -106,7 +106,9 @@ io.on('connection', (socket) => {
 
   //? Send message to group or person
   socket.on('send-message', (data) => {
+    Console.Log(`Socket: Try to Send Message...`)
     const sendUserSocket = global.onlineUsers.get(data.receiver.id)
+    console.log(sendUserSocket)
     if (sendUserSocket) {
       Console.Log(`Socket: Send message to...`)
       socket.to(sendUserSocket).emit('message-recieve', data)

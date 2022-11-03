@@ -16,17 +16,6 @@ MessagesRoutes.post('/message', MessagesBLL.Insert)
 
 /**
  * @swagger
- * /messages:
- *  get:
- *    description: Get All Messages
- *    responses:
- *      '200':
- *        description: Get All Messages
- */
-MessagesRoutes.get('/messages', MessagesBLL.GetAllFromTo)
-
-/**
- * @swagger
  * /messages/group:
  *  get:
  *    description: Get All 100 Messages from group

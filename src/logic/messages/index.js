@@ -68,20 +68,32 @@ export const MessagesBLL = {
   },
   GetGroupLastConversation: async (req, res) => {
     try {
-      const { sender, receiver } = req.body
-      const messages = await MessageService.GetGroupLastConversation({ groupId: receiver, max: 100 })
+      const { groupId } = req.body
+      const messages = await MessageService.GetGroupLastConversation({ groupId, max: 100 })
 
-      const userSender = await UserService.GetOneById(sender)
-      const anyReceiver = await GroupService.GetById(receiver)
+      const messagesToSend = []
+      if (messages.length > 0) {
+        const group = await GroupService.GetById(messages[0].receiver)
+        const usersCollection = new Map()
 
-      const messagesToReturn = await MessageUtils.GetMessages({
-        messages,
-        sender: userSender,
-        receiver: anyReceiver,
-        type: MessageType.Group,
-      })
+        for (const message of messages) {
+          var sender = usersCollection.get(message.sender)
+          if (!sender) {
+            sender = await UserService.GetOneById(message.sender)
+            usersCollection.set({ key: sender.id, value: sender })
+          }
 
-      return res.status(200).json({ statusCode: 200, response: messagesToReturn })
+          const store = await MessageUtils.GetMessage({
+            message,
+            sender: sender,
+            receiver: group,
+            type: MessageType.Group,
+          })
+          messagesToSend.push(store)
+        }
+      }
+
+      return res.status(200).json({ statusCode: 200, response: messagesToSend })
     } catch (error) {
       Console.Error(`MessagesBLL - GetGroupLastConversation => ${error.message}`)
       return res.status(200).json({ statusCode: 400, message: error.message })
@@ -107,28 +119,6 @@ export const MessagesBLL = {
       return res.status(200).json({ statusCode: 200, response: messagesToReturn })
     } catch (error) {
       Console.Error(`MessagesBLL - GetUserLastConversation => ${error.message}`)
-      return res.status(200).json({ statusCode: 400, message: error.message })
-    }
-  },
-  GetOneFromTo: async (req, res) => {
-    try {
-      const { sender, receiver, type } = req.query
-      const message = await MessageService.GetOne({ sender, receiver, type })
-
-      const userSender = await UserService.GetOneById(sender)
-      const anyReceiver =
-        type === MessageType.User ? await UserService.GetOneById(receiver) : await GroupService.GetById(receiver)
-
-      const messageToReturn = await MessageUtils.GetMessages({
-        message,
-        sender: userSender,
-        receiver: anyReceiver,
-        type: type,
-      })
-
-      return res.status(200).json({ statusCode: 200, response: messageToReturn })
-    } catch (error) {
-      Console.Error(`MessagesBLL - GetOneFromTo => ${error.message}`)
       return res.status(200).json({ statusCode: 400, message: error.message })
     }
   },
