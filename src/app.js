@@ -88,29 +88,32 @@ const io = socket(httpServer, {
 global.onlineUsers = new Map()
 
 io.on('connection', (socket) => {
-  Console.Log('Socket: Connection has been made...🔌')
+  Console.Log('🔌 Socket: Connection has been made...')
   global.chatSocket = socket
+
+  // console.log(global.onlineUsers)
 
   //? Disconnect from system...
   //? 1. delete user from all groups
   socket.on('disconnect', (user) => {
-    Console.Log(`Socket: Disconnection ${user.id}...`)
+    Console.Log(`🔌 Socket: Disconnection ${user.id}...`)
     global.onlineUsers.delete(user.id)
   })
 
   //? Add user to alls groups
   socket.on('add-user', (user) => {
-    Console.Log(`Socket: Add user ${user.username}...`)
+    Console.Log(`🔌 Socket: Add user ${user.username}...`)
     global.onlineUsers.set(user.id, socket.id)
   })
 
   //? Send message to group or person
   socket.on('send-message', (data) => {
-    Console.Log(`Socket: Try to Send Message...`)
+    // console.log(data)
+    Console.Log(`🔌 Socket: Try to Send Message...`)
     const sendUserSocket = global.onlineUsers.get(data.receiver.id)
-    console.log(sendUserSocket)
+    // console.log(sendUserSocket)
     if (sendUserSocket) {
-      Console.Log(`Socket: Send message to...`)
+      Console.Log(`🔌 Socket: Send message to...`)
       socket.to(sendUserSocket).emit('message-recieve', data)
     }
   })

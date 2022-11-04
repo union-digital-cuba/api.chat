@@ -103,7 +103,11 @@ export const MessagesBLL = {
     try {
       const { sender, receiver } = req.body
 
-      const conversation = await MessageService.GetConversation(sender, receiver)
+      const conversation = await MessageService.GetConversation({ sender, receiver })
+      if (!conversation) {
+        return res.status(200).json({ statusCode: 200, response: [] })
+      }
+
       const messages = await MessageService.GetUserLastConversation({ conversation, max: 100 })
 
       const userSender = await UserService.GetOneById(sender)

@@ -56,11 +56,11 @@ io.on('connection', (socket) => {
   })
   socket.on('disconnect', () => {
     const user = removeUser(socket.id)
-    console.log(user)
+    // console.log(user)
     io.to(user.room).emit('message', {
       user: 'Admin',
       text: `${user.name} just left the room`,
     })
-    console.log('A disconnection has been made')
+    // console.log('A disconnection has been made')
   })
 })

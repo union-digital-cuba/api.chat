@@ -1,4 +1,4 @@
-import { UUIDV4 } from 'sequelize'
+import { uuid } from 'uuidv4'
 import { Op } from 'sequelize'
 import { Message } from '../../model/models'
 import { Console } from '../../utils/console'
@@ -16,7 +16,7 @@ export const MessageService = {
         },
       })
 
-      var uuid = !exist ? UUIDV4() : exist.conversation
+      var uuid = !exist ? uuid() : exist.conversation
       const created = await Message.create({ message, type, sender, receiver, date, conversation: uuid })
       await created.save()
 
@@ -57,10 +57,15 @@ export const MessageService = {
   GetConversation: async ({ sender, receiver }) => {
     try {
       const message = await Message.findOne({
-        where: { sender: sender, receiver: receiver, type: MessageType.User },
-        order: [['date', 'ASC']],
+        where: {
+          [Op.or]: [
+            { sender: sender, receiver: receiver },
+            { sender: receiver, receiver: sender },
+          ],
+          type: MessageType.User,
+        },
       })
-      return message.conversation
+      return message?.conversation ?? null
     } catch (error) {
       Console.Error(`MessageServices - GetConversation-> ${error.message}`)
       throw new Error(error)
