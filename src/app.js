@@ -18,6 +18,7 @@ import { UsersRoutes } from './routes/users'
 import { AvatarsRoutes } from './routes/avatars'
 import { GroupsRoutes } from './routes/groups'
 import { MessagesRoutes } from './routes/messages'
+import { MessageType } from './utils/enums'
 
 const { SERVER, PORT, APPNAME, FRONTHOST } = Configuration
 
@@ -86,15 +87,13 @@ const io = socket(httpServer, {
 })
 
 global.onlineUsers = new Map()
+global.onlineGroups = new Map()
 
 io.on('connection', (socket) => {
   Console.Log('🔌 Socket: Connection has been made...')
   global.chatSocket = socket
 
-  // console.log(global.onlineUsers)
-
   //? Disconnect from system...
-  //? 1. delete user from all groups
   socket.on('disconnect', (user) => {
     Console.Log(`🔌 Socket: Disconnection ${user.id}...`)
     global.onlineUsers.delete(user.id)
@@ -102,19 +101,31 @@ io.on('connection', (socket) => {
 
   //? Add user to alls groups
   socket.on('add-user', (user) => {
-    Console.Log(`🔌 Socket: Add user ${user.username}...`)
+    Console.Log(`🔌 Socket: ${socket.id} - Add user ${user.username}...`)
     global.onlineUsers.set(user.id, socket.id)
   })
 
-  //? Send message to group or person
+  //? Addd group to all groups
+  socket.on('join', (groupId) => {
+    Console.Log(`🔌 Socket: ${socket.id} - Add group...`)
+    global.onlineGroups.set(groupId, socket.id)
+  })
+
+  //? Send message to group or user
   socket.on('send-message', (data) => {
-    // console.log(data)
     Console.Log(`🔌 Socket: Try to Send Message...`)
-    const sendUserSocket = global.onlineUsers.get(data.receiver.id)
-    // console.log(sendUserSocket)
-    if (sendUserSocket) {
-      Console.Log(`🔌 Socket: Send message to...`)
-      socket.to(sendUserSocket).emit('message-recieve', data)
+
+    const socketToSend =
+      data.type === MessageType.Group
+        ? global.onlineGroups.get(data.receiver.id)
+        : global.onlineUsers.get(data.receiver.id)
+
+    console.log(socketToSend)
+
+    if (socketToSend) {
+      Console.Log(`🔌 Socket: ${socketToSend} - Send message to...`)
+      io.to(socketToSend).emit('message', data)
+      // socket.to(socketToSend).emit('message-recieve', data)
     }
   })
 })

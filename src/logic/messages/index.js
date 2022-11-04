@@ -5,6 +5,28 @@ import { Console } from '../../utils/console'
 import { MessageType } from '../../utils/enums'
 
 const MessageUtils = {
+  GetMessagesByParticipants: async ({ messages, participants, type }) => {
+    try {
+      const messagesToReturn = messages.map((m) => {
+        const sender = participants.get(m.sender)
+        const receiver = participants.get(m.receiver)
+
+        return {
+          ...m.toJSON(),
+          sender: { id: sender.id, username: sender.username, image: sender.image },
+          receiver: {
+            id: receiver.id,
+            name: type === MessageType.User ? receiver.username : receiver.name,
+            image: receiver.image,
+          },
+        }
+      })
+      return messagesToReturn
+    } catch (error) {
+      Console.Error(`MessageUtils - GetMessagesByParticipants => ${error.message}`)
+      throw Error(error)
+    }
+  },
   GetMessages: async ({ messages, sender, receiver, type }) => {
     try {
       const messagesToReturn = messages.map((m) => {
@@ -113,10 +135,13 @@ export const MessagesBLL = {
       const userSender = await UserService.GetOneById(sender)
       const anyReceiver = await UserService.GetOneById(receiver)
 
-      const messagesToReturn = await MessageUtils.GetMessages({
+      const participants = new Map()
+      participants.set(userSender.id, userSender)
+      participants.set(anyReceiver.id, anyReceiver)
+
+      const messagesToReturn = await MessageUtils.GetMessagesByParticipants({
         messages,
-        sender: userSender,
-        receiver: anyReceiver,
+        participants,
         type: MessageType.User,
       })
 
