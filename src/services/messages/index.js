@@ -16,8 +16,8 @@ export const MessageService = {
         },
       })
 
-      var uuid = !exist ? uuid() : exist.conversation
-      const created = await Message.create({ message, type, sender, receiver, date, conversation: uuid })
+      var cid = !exist ? uuid() : exist.conversation
+      const created = await Message.create({ message, type, sender, receiver, date, conversation: cid })
       await created.save()
 
       Console.Info(`The message has been created`)

@@ -16,6 +16,17 @@ UsersRoutes.get('/users', UsersBLL.GetAll)
 
 /**
  * @swagger
+ * /user:
+ *  get:
+ *    description: Get all users
+ *    responses:
+ *      '200':
+ *        description: Get all users
+ */
+UsersRoutes.get('/user', UsersBLL.GetUserById)
+
+/**
+ * @swagger
  * /users/group:
  *  get:
  *    description: Get all users of the specific group by id
