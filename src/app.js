@@ -3,7 +3,6 @@ import cors from 'cors'
 
 import swaggerJsDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
-import socket from 'socket.io'
 import http from 'http'
 import { ORMFunctions } from './model/orm'
 
@@ -18,9 +17,9 @@ import { UsersRoutes } from './routes/users'
 import { AvatarsRoutes } from './routes/avatars'
 import { GroupsRoutes } from './routes/groups'
 import { MessagesRoutes } from './routes/messages'
-import { MessageType } from './utils/enums'
+import { Listener } from './services/socket'
 
-const { SERVER, PORT, APPNAME, FRONTHOST } = Configuration
+const { SERVER, PORT, APPNAME } = Configuration
 
 //cargando variables de configuracion
 
@@ -73,59 +72,5 @@ httpServer.listen(PORT, SERVER, () => {
   Console.Info(`API v${version}, Server Started at: http://${SERVER}:${PORT} ☕`)
 })
 
-//! SOCKET IO
-const io = socket(httpServer, {
-  // transports: ['polling'],
-  // pingInterval: 10000,
-  // pingTimeout: 5000,
-  cors: {
-    origin: FRONTHOST,
-    credentials: true,
-    // methods: ['GET', 'POST'],
-  },
-  autoConnect: false,
-})
-
-global.onlineUsers = new Map()
-global.onlineGroups = new Map()
-
-io.on('connection', (socket) => {
-  Console.Log('🔌 Socket: Connection has been made...')
-  global.chatSocket = socket
-
-  //? Disconnect from system...
-  socket.on('disconnect', (user) => {
-    Console.Log(`🔌 Socket: Disconnection ${user.id}...`)
-    global.onlineUsers.delete(user.id)
-  })
-
-  //? Add user to alls groups
-  socket.on('add-user', (user) => {
-    Console.Log(`🔌 Socket: ${socket.id} - Add user ${user.username}...`)
-    global.onlineUsers.set(user.id, socket.id)
-  })
-
-  //? Addd group to all groups
-  socket.on('join', (groupId) => {
-    Console.Log(`🔌 Socket: ${socket.id} - Add group...`)
-    global.onlineGroups.set(groupId, socket.id)
-  })
-
-  //? Send message to group or user
-  socket.on('send-message', (data) => {
-    Console.Log(`🔌 Socket: Try to Send Message...`)
-
-    const socketToSend =
-      data.type === MessageType.Group
-        ? global.onlineGroups.get(data.receiver.id)
-        : global.onlineUsers.get(data.receiver.id)
-
-    console.log(socketToSend)
-
-    if (socketToSend) {
-      Console.Log(`🔌 Socket: ${socketToSend} - Send message to...`)
-      io.to(socketToSend).emit('message', data)
-      // socket.to(socketToSend).emit('message-recieve', data)
-    }
-  })
-})
+//! Run Socket
+Listener.Socket(httpServer)

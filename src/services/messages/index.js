@@ -1,4 +1,4 @@
-import { uuid } from 'uuidv4'
+import { v4 as uuidv4 } from 'uuid'
 import { Op } from 'sequelize'
 import { Message } from '../../model/models'
 import { Console } from '../../utils/console'
@@ -16,7 +16,7 @@ export const MessageService = {
         },
       })
 
-      var cid = !exist ? uuid() : exist.conversation
+      var cid = !exist ? uuidv4() : exist.conversation
       const created = await Message.create({ message, type, sender, receiver, date, conversation: cid })
       await created.save()
 
