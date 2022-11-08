@@ -8,14 +8,14 @@ const { FRONTHOST } = Configuration
 
 const Listener = {
   Socket: (httpServer) => {
-    const store = { socket: null, users: new Map(), groups: new Map() }
+    const store = { socket: null, users: new Map(), rooms: [] }
 
     const io = socket(httpServer, {
       // transports: ['polling'],
       // pingInterval: 10000,
       // pingTimeout: 5000,
       cors: {
-        origin: FRONTHOST,
+        origin: [FRONTHOST, '100.100.100.2:3000'],
         credentials: true,
         // methods: ['GET', 'POST'],
       },
@@ -24,36 +24,58 @@ const Listener = {
 
     io.on('connection', (socket) => {
       Console.Log(`🔌 Socket: Connection has been made... ${FRONTHOST}`)
+
       store.socket = socket
 
       //? Disconnect from system...
-      socket.on('disconnect', (user) => {
-        Console.Log(`🔌 Socket: Disconnection ${user.id}...`)
-        store.users.delete(user.id)
+      socket.on('disconnect', () => {
+        Console.Log(`🔌 Socket: Disconnection...`)
       })
 
       //? Add user to alls groups
       socket.on('add-user', (user) => {
         Console.Log(`🔌 Socket: ${socket.id} - Add user ${user.username}...`)
-        store.users.set(user.id, socket.id)
+        store.users.set(user.id, { name: user.username, socketId: socket.id })
+        // socket.join(socket.id)
       })
 
-      //? Addd group to all groups
-      socket.on('join', (groupId) => {
-        Console.Log(`🔌 Socket: ${socket.id} - Add group...`)
-        store.groups.set(groupId, socket.id)
+      //? Add user to all groups
+      socket.on('join', (room) => {
+        const current = store.rooms.find((p) => p.id === room.id)
+        if (current) {
+          const socketId = current.value.find((p) => p === socket.id)
+          if (!socketId) current.value.push(socket.id)
+        } else {
+          store.rooms.push({ id: room.id, value: [socket.id] })
+        }
+
+        socket.join(room.id)
+        socket.to(room.id).emit('user-joined', socket.id)
+        Console.Log(`🔌 Socket: ${room.name} - Add room...`)
+      })
+
+      //? Leave user to all groups
+      socket.on('leave', () => {
+        for (const room of store.rooms) {
+          const fitlered = room.value.filter((p) => p !== socket.id)
+          room.value = [...fitlered]
+
+          socket.leave(room.id)
+          socket.to(room.id).emit('user-left', socket.id)
+        }
+
+        Console.Log(`🔌 Socket: ${socket.id} - Leave room...`)
       })
 
       //? Send message to group or user
-      socket.on('send-message', (data) => {
-        Console.Log(`🔌 Socket: Try to Send Message...`)
-
-        const socketToSend =
-          data.type === MessageType.Group ? store.groups.get(data.receiver.id) : store.users.get(data.receiver.id)
-
-        if (socketToSend) {
-          Console.Log(`🔌 Socket: ${socketToSend} - Send message to...`)
-          io.to(socketToSend).emit('message', data)
+      socket.on('send-message', ({ data, type }) => {
+        if (type === MessageType.Group) {
+          socket.to(data.receiver.id).emit('message', data)
+          Console.Log(`🔌 Socket: Send message to group - message: ${data.message}...`)
+        } else {
+          const { name, socketId } = store.users.get(data.receiver.id)
+          socket.to(socketId).emit('message', data)
+          Console.Log(`🔌 Socket: Send message to user ${name} - message: ${data.message}...`)
         }
       })
     })

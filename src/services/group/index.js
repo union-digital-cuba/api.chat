@@ -9,9 +9,9 @@ export const GroupService = {
     try {
       var publicGroup = await Group.findOne({ where: { id: 0 } })
 
-      const image = await GetMultiAvatar('public')
-
       if (!publicGroup) {
+        const image = await GetMultiAvatar('public')
+
         const publicGroup = {
           id: 0,
           name: 'Taberna',
