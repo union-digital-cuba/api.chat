@@ -17,7 +17,7 @@ import { UsersRoutes } from './routes/users'
 import { AvatarsRoutes } from './routes/avatars'
 import { GroupsRoutes } from './routes/groups'
 import { MessagesRoutes } from './routes/messages'
-import { Listener } from './services/socket'
+import { Listener } from './services/socket/socket'
 
 const { SERVER, PORT, APPNAME } = Configuration
 
