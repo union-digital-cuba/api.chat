@@ -12,7 +12,6 @@ const StoreSocket = {
     const users = StoreSocket.Rooms[room] || new Map()
     StoreSocket.Rooms[room] = users.set(name, socket.id)
 
-    // StoreSocket.Rooms[room].users[StoreSocket.Socket.id] = name
     socket.join(room)
   },
   Remove: ({ name, room, socket }) => {
