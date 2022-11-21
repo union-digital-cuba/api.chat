@@ -1,36 +1,29 @@
-import { MessageType } from '../../utils/enums'
-
 const StoreSocket = {
-  Socket: undefined,
-  Users: [],
-  Add: ({ id, name, room, type }) => {
+  Rooms: {},
+  Users: {},
+  Add: ({ name, room, socket }) => {
     name = name.trim().toLowerCase()
     room = room.trim().toLowerCase()
 
-    const exist = StoreSocket.Users.find((user) => user.room === room && user.name === name)
-    if (!exist) {
-      const user = { id, name, room, type }
-      StoreSocket.Users.push(user)
-      return { user }
-    }
+    //adicionar Usuario
+    StoreSocket.Users[name] = socket.id
 
-    return { user: undefined }
-  },
-  Remove: (id) => {
-    const index = StoreSocket.Users.findIndex((user) => user.id === id)
+    //adicionar el Socket del usuario al grupo
+    const users = StoreSocket.Rooms[room] || new Map()
+    StoreSocket.Rooms[room] = users.set(name, socket.id)
 
-    if (index !== -1) return StoreSocket.Users.splice(index, 1)[0]
+    // StoreSocket.Rooms[room].users[StoreSocket.Socket.id] = name
+    socket.join(room)
   },
-  GetUser: (username, id) => {
-    const composerRoomName = `${username.trim().toLowerCase()}-${id}`
-    return StoreSocket.Users.find((user) => user.room === composerRoomName && user.type === MessageType.User)
+  Remove: ({ name, room, socket }) => {
+    const current = StoreSocket.Rooms[room]
+    current.delete(name)
+
+    socket.leave(room)
   },
-  GetRoom: (name, id) => {
-    const composerRoomName = `${name.trim().toLowerCase()}-${id}`
-    return StoreSocket.Users.find((user) => user.room === composerRoomName && user.type === MessageType.Group)
+  GetActiveUsersInRoom: (room) => {
+    return StoreSocket.Rooms[room]
   },
-  GetActiveUsersInRoom: (room) =>
-    StoreSocket.Users.filter((user) => user.room === room && user.type === MessageType.Group),
 }
 
 export default StoreSocket

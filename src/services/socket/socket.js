@@ -1,9 +1,8 @@
-import socket, { Socket } from 'socket.io'
+import socket from 'socket.io'
 
 import { Console } from '../../utils/console'
 import { Configuration } from '../../env/configuration'
 import StoreSocket from './store'
-import { MessageType } from '../../utils/enums'
 
 const { FRONTHOST } = Configuration
 
@@ -24,44 +23,44 @@ const Listener = {
     io.on('connection', (socket) => {
       Console.Log(`🔌 Socket: Connection has been made... ${FRONTHOST}`)
 
-      StoreSocket.Socket = socket
+      const data = {
+        room: undefined,
+      }
 
       //? Disconnect from system...
       socket.on('disconnect', () => {
-        const user = StoreSocket.Remove(socket.id)
+        // const user = StoreSocket.Remove(socket.id)
 
-        if (user) {
-          // io.to(user.room).emit('message', { user: 'System', text: `${user.name} has left.` })
-          io.to(user.room).emit('room-online', { room: user.room, users: StoreSocket.GetActiveUsersInRoom(user.room) })
+        // if (user) {
+        //   // io.to(user.room).emit('message', { user: 'System', text: `${user.name} has left.` })
+        //   io.to(user.room).emit('room-online', { room: user.room, users: StoreSocket.GetActiveUsersInRoom(user.room) })
+        Console.Log(`🔌 Socket: Disconnection...`)
+        // }
+      })
 
-          Console.Log(`🔌 Socket: Disconnection...`)
-        }
+      //? Add user
+      socket.on('new-user', ({ name, room }) => {
+        data.room = room
+        StoreSocket.Add({ name, room, socket })
+        Console.Log(`🔌 Socket: Add user... ${StoreSocket.UserRoom}`)
       })
 
       //? Add room
-      socket.on('join', ({ name, room, type }) => {
-        const { user } = StoreSocket.Add({ id: socket.id, name, room, type })
+      socket.on('join', ({ name, room }) => {
+        StoreSocket.Add({ name, room, socket })
+        // io.to(user.room).emit('room-online', { room: user.room, users: StoreSocket.GetActiveUsersInRoom(user.room) })
+        Console.Log(`🔌 Socket: Joined to Room...${room}`)
+      })
 
-        if (user) {
-          socket.join(user.room)
-
-          // socket.emit('message', { user: 'System', text: `${user.name}, welcome to room ${user.room}.` })
-          // socket.broadcast.to(user.room).emit('user-online', )
-
-          io.to(user.room).emit('room-online', { room: user.room, users: StoreSocket.GetActiveUsersInRoom(user.room) })
-
-          Console.Log(`🔌 Socket: Add room... (${user.id}, ${user.name}, ${user.room}) `)
-        }
+      //? Leave room
+      socket.on('leave', ({ name, room }) => {
+        StoreSocket.Remove({ name, room, socket })
+        Console.Log(`🔌 Socket: Leaving the Room... ${room}`)
       })
 
       //? Send message to group or user
-      socket.on('send-message', ({ message }) => {
-        const data =
-          message.type === MessageType.Group
-            ? StoreSocket.GetRoom(message.receiver.name, message.receiver.id)
-            : StoreSocket.GetUser(message.receiver.name, message.receiver.id)
-        console.log(`Enviado a: (${data?.room},${message.message})`)
-        data && socket.to(data.room).emit('message', message)
+      socket.on('send-message', ({ room, message }) => {
+        socket.to(room).emit('message', message)
       })
     })
   },
