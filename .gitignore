@@ -105,3 +105,4 @@ lib
 .tern-port
 
 # Not Build
+chat.db

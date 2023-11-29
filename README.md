@@ -14,7 +14,7 @@ API para chat con Socket.io
 ## App features 🪐
 
 - API
-- WebSocket
+- Socket.IO
 
 ## Backend Development 🌚
 

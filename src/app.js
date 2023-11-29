@@ -1,16 +1,27 @@
 import express from 'express'
 import cors from 'cors'
-import dotenv from 'dotenv'
+
 import swaggerJsDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
+import http from 'http'
+import { ORMFunctions } from './model/orm'
 
 import { version, description, author } from '../package.json'
-import { consoleInfo } from './utils/handleConsole'
-import { systemRoutes } from './routes/routesSystem'
+import { Console } from './utils/console'
+import { Loader } from './utils/init'
+import { Configuration } from './env/configuration'
 
-// cargando puertos de configuracion
-const PORT = process.env.PORT || 3000
-const SERVER = process.env.SERVER || 'localhost'
+import { SystemRoutes } from './routes/system'
+import { AuthenticationRoutes } from './routes/authentication'
+import { UsersRoutes } from './routes/users'
+import { AvatarsRoutes } from './routes/avatars'
+import { GroupsRoutes } from './routes/groups'
+import { MessagesRoutes } from './routes/messages'
+import { Listener } from './services/socket/socket'
+
+const { SERVER, PORT, APPNAME } = Configuration
+
+//cargando variables de configuracion
 
 // extendiendo de https://swagger.io/specification/#infoObject
 const swaggerOptions = {
@@ -21,18 +32,14 @@ const swaggerOptions = {
       contact: {
         name: author,
       },
-      servers: [`http://${SERVER}:${PORT}`, `https://api-event-checker.herokuapp.com`],
+      servers: [`http://${SERVER}:${PORT}`, `https://${APPNAME}.herokuapp.com`],
     },
   },
   apis: ['src/routes/*.js'],
 }
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions)
-
 const app = express()
-
-// cargando las variables de entorno
-dotenv.config()
 
 // configurando express
 app.set('port', PORT)
@@ -42,11 +49,28 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(cors())
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
-app.use(systemRoutes)
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+
+app.use(SystemRoutes)
+app.use('/api', AuthenticationRoutes)
+app.use('/api', UsersRoutes)
+app.use('/api', AvatarsRoutes)
+app.use('/api', GroupsRoutes)
+app.use('/api', MessagesRoutes)
 
 app.use(express.static('dist'))
 
-app.listen(PORT, () => {
-  consoleInfo(`API v${version}, Server Started at: http://${SERVER}:${PORT} ☕`)
+const httpServer = http.createServer(app)
+
+const StartSequelize = async () => {
+  await ORMFunctions.Start()
+  await Loader()
+}
+
+httpServer.listen(PORT, SERVER, () => {
+  StartSequelize()
+  Console.Info(`API v${version}, Server Started at: http://${SERVER}:${PORT} ☕`)
 })
+
+//! Run Socket
+Listener.Socket(httpServer)

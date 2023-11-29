@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/union-digital-cuba/api.event.checker.git"
+    "url": "git+https://github.com/union-digital-cuba/api.chat.git"
   },
   "keywords": [
     "API",
@@ -28,18 +28,22 @@
   "author": "Union Digital",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/union-digital-cuba/api.event.checker/issues"
+    "url": "https://github.com/union-digital-cuba/api.chat/issues"
   },
-  "homepage": "https://github.com/union-digital-cuba/api.event.checker#readme",
+  "homepage": "https://github.com/union-digital-cuba/api.chat#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "luxon": "^2.4.0",
     "morgan": "^1.10.0",
+    "sequelize": "^6.20.0",
+    "socket.io": "^4.5.1",
+    "sqlite3": "^5.0.8",
     "swagger-jsdoc": "^6.2.1",
     "swagger-jsdoc-webpack-plugin": "^2.0.2",
-    "swagger-ui-express": "^4.3.0"
+    "swagger-ui-express": "^4.3.0",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",
